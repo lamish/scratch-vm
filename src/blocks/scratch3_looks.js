@@ -278,8 +278,22 @@ class Scratch3LooksBlocks {
             looks_goforwardbackwardlayers: this.goForwardBackwardLayers,
             looks_size: this.getSize,
             looks_costumenumbername: this.getCostumeNumberName,
-            looks_backdropnumbername: this.getBackdropNumberName
+            looks_backdropnumbername: this.getBackdropNumberName,
+
+            // add by liuming
+            mabot_test_set_mc_next_color: this.mabot_test_set_mc_next_color
         };
+    }
+
+    // add by liuming
+    mabot_test_set_mc_next_color () {
+        console.log('# vm mabot_test_set_mc_next_color');
+        const event = new CustomEvent('mabot', {
+            detail: {
+                type: 'mabot_test_set_mc_next_color'
+            }
+        });
+        document.dispatchEvent(event);
     }
 
     getMonitored () {
