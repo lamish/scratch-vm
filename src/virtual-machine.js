@@ -163,8 +163,17 @@ class VirtualMachine extends EventEmitter {
         this.flyoutBlockListener = this.flyoutBlockListener.bind(this);
         this.monitorBlockListener = this.monitorBlockListener.bind(this);
         this.variableListener = this.variableListener.bind(this);
+
+        this.mabotStateListener();
     }
 
+    mabotStateListener () {
+        const mabotSensorStatesManager = require('./bell/mabotSensorStatesManager');
+
+        this.on("mabot_sensor_change", data => {
+            mabotSensorStatesManager.onSensorStateChanged(data);
+        });
+    }
     /**
      * Start running the VM - do this before anything else.
      */

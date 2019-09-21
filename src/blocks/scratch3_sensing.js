@@ -1,6 +1,7 @@
 const Cast = require('../util/cast');
 const Timer = require('../util/timer');
 const getMonitorIdForBlockWithArgs = require('../util/get-monitor-id');
+const mabotSensorStatesManager = require('../bell/mabotSensorStatesManager');
 
 class Scratch3SensingBlocks {
     constructor (runtime) {
@@ -71,8 +72,16 @@ class Scratch3SensingBlocks {
             sensing_askandwait: this.askAndWait,
             sensing_answer: this.getAnswer,
             sensing_username: this.getUsername,
-            sensing_userid: () => {} // legacy no-op block
+            sensing_userid: () => {}, // legacy no-op block
+
+            // add by liuming
+            mabot_read_sensor_touch_ball: this.mabot_read_sensor_touch_ball
         };
+    }
+
+    mabot_read_sensor_touch_ball(args) {
+        const mabot_sensor_index = Cast.toNumber(args.mabot_sensor_index);
+        return mabotSensorStatesManager.touchSensor[mabot_sensor_index];
     }
 
     getMonitored () {
