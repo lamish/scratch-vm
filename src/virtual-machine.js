@@ -174,6 +174,7 @@ class VirtualMachine extends EventEmitter {
             mabotSensorStatesManager.onSensorStateChanged(data);
         });
     }
+
     /**
      * Start running the VM - do this before anything else.
      */

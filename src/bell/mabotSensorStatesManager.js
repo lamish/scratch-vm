@@ -1,10 +1,12 @@
 class MabotSensorStatesManager {
-    constructor() {
+    constructor () {
         this.touchSensor = [];
+        this.motorBall = [];
     }
 
-    onSensorStateChanged(data) {
-        this.touchSensor = data.touchSensor
+    onSensorStateChanged (data) {
+        this.touchSensor = data.touchSensor;
+        this.motorBall = data.motorBall;
     }
 }
 

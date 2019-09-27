@@ -281,7 +281,8 @@ class Scratch3LooksBlocks {
             looks_backdropnumbername: this.getBackdropNumberName,
 
             // add by liuming
-            mabot_test_set_mc_next_color: this.mabot_test_set_mc_next_color
+            mabot_test_set_mc_next_color: this.mabot_test_set_mc_next_color,
+
         };
     }
 

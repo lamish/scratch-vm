@@ -139,7 +139,8 @@ class Scratch3SoundBlocks {
             sound_effects_menu: this.effectsMenu,
             sound_setvolumeto: this.setVolume,
             sound_changevolumeby: this.changeVolume,
-            sound_volume: this.getVolume
+            sound_volume: this.getVolume,
+            sound_mabot_set_all_lights_to_one_mode :this.setMabotLights,
         };
     }
 
@@ -344,6 +345,21 @@ class Scratch3SoundBlocks {
 
     effectsMenu (args) {
         return args.EFFECT;
+    }
+
+    setMabotLights (args) {
+        const target_light = Cast.toString(args.target_light);
+        const light_color = Cast.toNumber(args.light_color);
+        const light_mode = Cast.toNumber(args.light_mode);
+        const event = new CustomEvent('mabot', {
+            detail: {
+                type: 'sound_mabot_set_all_lights_to_one_mode',
+                params: {
+                    target_light, light_color, light_mode
+                }
+            }
+        });
+        document.dispatchEvent(event);
     }
 }
 

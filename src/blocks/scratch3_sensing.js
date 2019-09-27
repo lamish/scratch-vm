@@ -79,7 +79,9 @@ class Scratch3SensingBlocks {
         };
     }
 
-    mabot_read_sensor_touch_ball(args) {
+    // eslint-disable-next-line camelcase
+    mabot_read_sensor_touch_ball (args) {
+        // eslint-disable-next-line camelcase
         const mabot_sensor_index = Cast.toNumber(args.mabot_sensor_index);
         return mabotSensorStatesManager.touchSensor[mabot_sensor_index];
     }
