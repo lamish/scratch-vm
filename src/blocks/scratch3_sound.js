@@ -140,7 +140,12 @@ class Scratch3SoundBlocks {
             sound_setvolumeto: this.setVolume,
             sound_changevolumeby: this.changeVolume,
             sound_volume: this.getVolume,
-            sound_mabot_set_all_lights_to_one_mode :this.setMabotLights,
+            sound_mabot_set_all_lights_to_one_mode :this.setMabotLights, // 主控 or 驱动球(1) 灯光颜色为 [颜色],  模式为[呼吸,渐变,变化]
+            bell_light_color_mode_concurrence :this.setMabotLights, // 设置 主控 or 驱动球(1)灯光颜色为 [颜色],  模式为[呼吸,渐变,变化], 持续（2）秒, 是否阻断
+            bell_light_closed :this.closedMabotLight, // 主控驱动球(1) 灯光关闭
+            bell_light_play_buzzer :this.playBuzzer, // 播放蜂鸣器, 音调 [高,中,低], 音阶[1,2,...,9]
+            bell_light_play_buzzer_concurrence :this.playBuzzer, // 播放蜂鸣器, 音调 [高,中,低], 音阶[1,2,...,9], 持续（2）秒, 是否阻断
+            bell_light_closed_buzzer :this.closeMabotBuzzer, // 停止蜂鸣
         };
     }
 
@@ -348,19 +353,121 @@ class Scratch3SoundBlocks {
     }
 
     setMabotLights (args) {
-        const target_light = Cast.toString(args.target_light);
-        const light_color = Cast.toNumber(args.light_color);
-        const light_mode = Cast.toNumber(args.light_mode);
+        const target_light = Cast.toNumber(args.CENTER);
+        const light_color = Cast.toNumber(args.COLOR);
+        const light_mode = Cast.toNumber(args.MODE);
+
         const event = new CustomEvent('mabot', {
             detail: {
                 type: 'sound_mabot_set_all_lights_to_one_mode',
                 params: {
-                    target_light, light_color, light_mode
+                    target_light, 
+                    light_mode,
+                    light_color 
+                }
+            }
+        });
+        document.dispatchEvent(event);
+         
+        if(args.BLOCK != undefined && args.SECONDS != undefined){
+            const block = Cast.toBoolean(args.BLOCK); // 是否阻塞
+            const seconds = Cast.toNumber(args.SECONDS); // 持续x秒
+            //持续时间
+            setTimeout(()=>{
+                this.closedMabotLight(args);
+            }, seconds * 1000); 
+            // 是否阻塞
+            if(!block){
+                return this.wait(seconds);    
+            }
+        }
+    }
+
+    closedMabotLight(args){
+        const light_center = Cast.toNumber(args.CENTER); // 主控 or 驱动球
+        const light_mode = 1; // 模式
+        const light_color = 1; // 颜色
+        const event = new CustomEvent('mabot', {
+            detail: {
+                type: 'bell_light_closed',
+                params: {
+                    light_center,
+                    light_mode,
+                    light_color
                 }
             }
         });
         document.dispatchEvent(event);
     }
+
+    setBeepNum(buzzer_tone, args){
+        let volume = 0;
+        // buzzer_tone 1高[25-31] 2中[18-24] 3低[11-17]
+        switch(buzzer_tone){
+            case 1:
+                volume = 24 + args;
+                break;
+            case 2:
+                volume = 17 + args;
+                break;
+            case 3:
+                volume = 10 + args;
+                break;
+        }
+        return volume;
+    }
+
+    playBuzzer(args){
+        const buzzer_tone = Cast.toNumber(args.TONE); // 音调
+        const buzzer_volume = Cast.toNumber(args.VOLUME); // 音阶 
+
+        let volume = this.setBeepNum(buzzer_tone, buzzer_volume);
+        
+        const event = new CustomEvent('mabot', {
+            detail: {
+                type: 'bell_light_play_buzzer',
+                params: {
+                    volume
+                }
+            }
+        });
+        document.dispatchEvent(event);
+
+        if(args.BLOCK != undefined && args.SECONDS != undefined){
+            const block = Cast.toBoolean(args.BLOCK); // 是否阻塞
+            const seconds = Cast.toNumber(args.SECONDS); // 持续x秒
+            //持续时间
+            setTimeout(()=>{
+                this.closeMabotBuzzer();
+            }, seconds * 1000); 
+            // 是否阻塞
+            if(!block){
+                return this.wait(seconds);    
+            }
+        }
+    }
+
+    closeMabotBuzzer(){
+        const closedCode = 34;
+        const event = new CustomEvent('mabot', {
+            detail: {
+                type: 'bell_light_closed_buzzer',
+                params: {
+                    closedCode
+                }
+            }
+        });
+        document.dispatchEvent(event);
+    }
+    // 等待 or 阻塞
+    wait(sec) {
+        const duration = Math.max(0, 1000 * Cast.toNumber(sec));    
+        return new Promise(resolve => {
+          setTimeout(() => {
+            resolve();
+          }, duration);
+        });
+      }
 }
 
 module.exports = Scratch3SoundBlocks;
