@@ -508,7 +508,8 @@ const execute = function (sequencer, thread) {
             // runtime.profiler.stop(blockFunctionProfilerId);
             runtime.profiler.records.push(runtime.profiler.STOP, 0);
         }
-
+        //console.log("mylog argValues: ",argValues);
+        //console.log("mylog  primitiveReportedValue: ",primitiveReportedValue);
         // If it's a promise, wait until promise resolves.
         if (isPromise(primitiveReportedValue)) {
             handlePromise(primitiveReportedValue, sequencer, thread, opCached, lastOperation);
