@@ -27,7 +27,11 @@ class Scratch3EventBlocks {
             event_whentouchingobject: this.touchingObject,
             event_broadcast: this.broadcast,
             event_broadcastandwait: this.broadcastAndWait,
-            event_whengreaterthan: this.hatGreaterThanPredicate
+            event_whengreaterthan: this.hatGreaterThanPredicate,
+            bell_event_color_type: this.colorSensor, // 当颜色传感器（1） [=>,=,<=] (1)
+            bell_event_gyro_cm: this.gyroSensor, // 当陀螺仪的[俯仰角度,翻滚角度,旋转角度] [=>,=,<=][0,0,20]
+            bell_event_infrared_cm: this.infraredSensor, // 当红外传感器（1） [=>,=,<=] 距离 [0,0,20]
+            bell_event_touch_press: this.touchSensor, // 当触控球（1）的状态为 [按下，没按下]
         };
     }
 
@@ -129,6 +133,31 @@ class Scratch3EventBlocks {
                 }
             }
         }
+    }
+
+    colorSensor(args){
+        const target_color_number = Cast.toNumber(args.COLOR_NUM);
+        const target_color = Cast.toNumber(args.COLOR);
+
+    }
+
+    gyroSensor(args){
+        const target_gyro = Cast.toNumber(args.GYRO);
+        const target_gyro_as = Cast.toNumber(args.JUDGE);
+        const target_gyro_value = Cast.toNumber(args.DISTANCE);
+    }
+
+    infraredSensor(args){
+        const target_infrared = Cast.toNumber(args.INFRARED);
+        const target_infrared_as = Cast.toNumber(args.JUDGE);
+        const target_infrared_value = Cast.toNumber(args.DISTANCE);
+    }
+
+    touchSensor(args){
+        const target_touch = Cast.toNumber(args.TOUCH);
+        const target_touch_isPress = Cast.toNumber(args.TOUCHPRESS);
+
+
     }
 }
 
