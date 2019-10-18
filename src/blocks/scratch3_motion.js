@@ -36,7 +36,21 @@ class Scratch3MotionBlocks {
             motion_xposition: this.getX,
             motion_yposition: this.getY,
             motion_direction: this.getDirection,
-            motion_motorBall_rotate_on_power_for_seconds: this.setMabotMotorBall,
+            motion_motorBall_rotate_on_power_for_seconds: this.setMabotMotorBallPower,
+            motion_motorBall_rotate_on_power: this.setMabotMotorBallPower1,
+            motion_motorBall_rotate_on_speed_for_seconds: this.setMabotMotorBallSpeed,
+            motion_motorBall_rotate_on_speed: this.setMabotMotorBallSpeed1,
+            motion_motorBall_stop: this.mabotMotorBallStop,
+            motion_motorBall_reset: this.mabotMotorBallReset,
+
+            motion_motorBall_get_angle: this.getMabotMotorBallAngle,
+            motion_motorBall_get_speed: this.getMabotMotorBallSpeed,
+
+            motion_horizontalJoint_set_angle: this.setMabotHorizontalJoint,
+            motion_swingJoint_set_angle: this.setMabotSwingJoint,
+
+            motion_horizontalJoint_get_angle: this.getMabotHorizontalJoint,
+            motion_swingJoint_get_angle: this.getMabotSwingJoint,
             // Legacy no-op blocks:
             motion_scroll_right: () => {
             },
@@ -51,11 +65,11 @@ class Scratch3MotionBlocks {
         };
     }
 
-    setMabotMotorBall(args) {
+    setMabotMotorBallPower(args) {
         const mabot_motor_ball_index = Cast.toNumber(args.mabot_motor_ball_index);
         const rotate_direction = Cast.toString(args.rotate_direction);
-        const rotate_for_seconds = Cast.toNumber(args.rotate_for_seconds);
         const power = Cast.toNumber(args.power);
+        const rotate_for_seconds = Cast.toNumber(args.rotate_for_seconds);
         const event = new CustomEvent('mabot', {
             detail: {
                 type: 'motion_motorBall_rotate_on_power_for_seconds',
@@ -68,6 +82,214 @@ class Scratch3MotionBlocks {
         document.dispatchEvent(event);
         //return mabotSensorStatesManager.motorBall[mabot_motor_ball_index];
     }
+
+    setMabotMotorBallPower1(args) {
+        const mabot_motor_ball_index = Cast.toNumber(args.mabot_motor_ball_index);
+        const rotate_direction = Cast.toString(args.rotate_direction);
+        const power = Cast.toNumber(args.power);
+        const event = new CustomEvent('mabot', {
+            detail: {
+                type: 'motion_motorBall_rotate_on_power',
+                params: {
+                    mabot_motor_ball_index, rotate_direction, power
+                }
+            }
+        });
+        document.dispatchEvent(event);
+        //return mabotSensorStatesManager.motorBall[mabot_motor_ball_index];
+    }
+
+    setMabotMotorBallSpeed(args) {
+        const mabot_motor_ball_index = Cast.toNumber(args.mabot_motor_ball_index);
+        const rotate_direction = Cast.toString(args.rotate_direction);
+        const speed = Cast.toNumber(args.speed);
+        const rotate_for_seconds = Cast.toNumber(args.rotate_for_seconds);
+        const event = new CustomEvent('mabot', {
+            detail: {
+                type: 'motion_motorBall_rotate_on_speed_for_seconds',
+                params: {
+                    mabot_motor_ball_index, rotate_direction,
+                    speed, rotate_for_seconds
+                }
+            }
+        });
+        document.dispatchEvent(event);
+    }
+
+    setMabotMotorBallSpeed1(args) {
+        const mabot_motor_ball_index = Cast.toNumber(args.mabot_motor_ball_index);
+        const rotate_direction = Cast.toString(args.rotate_direction);
+        const speed = Cast.toNumber(args.speed);
+        const event = new CustomEvent('mabot', {
+            detail: {
+                type: 'motion_motorBall_rotate_on_speed',
+                params: {
+                    mabot_motor_ball_index, rotate_direction, speed
+                }
+            }
+        });
+        document.dispatchEvent(event);
+
+    }
+
+    mabotMotorBallStop(args) {
+        const mabot_motor_ball_index = Cast.toNumber(args.mabot_motor_ball_index);
+        const immediateOrNot = Cast.toString(args.immediatelyOrNot);
+        const event = new CustomEvent('mabot', {
+            detail: {
+                type: 'motion_motorBall_stop',
+                params: {
+                    mabot_motor_ball_index, immediateOrNot
+                }
+            }
+        });
+        document.dispatchEvent(event);
+    }
+
+    mabotMotorBallReset(args) {
+        const mabot_motor_ball_index = Cast.toNumber(args.mabot_motor_ball_index);
+        const event = new CustomEvent('mabot', {
+            detail: {
+                type: 'motion_motorBall_reset',
+                params: {
+                    mabot_motor_ball_index,
+                }
+            }
+        });
+        document.dispatchEvent(event);
+    }
+
+
+    getMabotMotorBallAngle(args) {
+        const mabot_motor_ball_index = Cast.toNumber(args.mabot_motor_ball_index);
+        const event = new CustomEvent('mabot', {
+            detail: {
+                type: 'motion_motorBall_get_angle',
+                params: {
+                    mabot_motor_ball_index,
+                }
+            }
+        });
+        document.dispatchEvent(event);
+
+        return new Promise(function (resolve) {
+            let init = setInterval(function () {
+                if (mabotSensorStatesManager.statusChanged) {
+                    if (mabotSensorStatesManager.motorBallIndex === mabot_motor_ball_index){
+                        resolve(mabotSensorStatesManager.motorBallPos[3] * Math.pow(256, 3) + mabotSensorStatesManager.motorBallPos[2] * Math.pow(256, 2) +
+                            mabotSensorStatesManager.motorBallPos[1] * 256 + mabotSensorStatesManager.motorBallPos[0]);
+                        //验证resolve 是否会影响后面程序的执行。
+                        mabotSensorStatesManager.statusChanged = false;
+                        clearInterval(init);
+                    }
+                }
+            }, 20);
+        });
+    }
+
+    getMabotMotorBallSpeed(args) {
+        const mabot_motor_ball_index = Cast.toNumber(args.mabot_motor_ball_index);
+        const event = new CustomEvent('mabot', {
+            detail: {
+                type: 'motion_motorBall_get_speed',
+                params: {
+                    mabot_motor_ball_index,
+                }
+            }
+        });
+        document.dispatchEvent(event);
+
+        return new Promise(function (resolve) {
+            let init = setInterval(function () {
+                if (mabotSensorStatesManager.statusChanged) {
+                    if (mabotSensorStatesManager.motorBallIndex === mabot_motor_ball_index){
+                        resolve(mabotSensorStatesManager.motorBallSpeed);
+                        mabotSensorStatesManager.statusChanged = false;
+                        clearInterval(init);
+                    }
+                }
+            }, 20);
+        });
+    }
+
+    setMabotHorizontalJoint(args) {
+        const mabot_horizontalJoint_index = Cast.toNumber(args.mabot_horizontalJoint_index);
+        const mabot_horizontalJoint_angle = Cast.toString(args.mabot_horizontalJoint_angle);
+        const event = new CustomEvent('mabot', {
+            detail: {
+                type: 'motion_horizontalJoint_set_angle',
+                params: {
+                    mabot_horizontalJoint_index, mabot_horizontalJoint_angle
+                }
+            }
+        });
+        document.dispatchEvent(event);
+    }
+
+    setMabotSwingJoint(args) {
+        const mabot_swingJoint_index = Cast.toNumber(args.mabot_swingJoint_index);
+        const mabot_swingJoint_angle = Cast.toString(args.mabot_swingJoint_angle);
+        const event = new CustomEvent('mabot', {
+            detail: {
+                type: 'motion_swingJoint_set_angle',
+                params: {
+                    mabot_swingJoint_index, mabot_swingJoint_angle
+                }
+            }
+        });
+        document.dispatchEvent(event);
+    }
+
+
+    getMabotHorizontalJoint(args) {
+        const mabot_horizontalJoint_index = Cast.toNumber(args.mabot_horizontalJoint_index);
+        const event = new CustomEvent('mabot', {
+            detail: {
+                type: 'motion_horizontalJoint_get_angle',
+                params: {
+                    mabot_horizontalJoint_index,
+                }
+            }
+        });
+        document.dispatchEvent(event);
+        return new Promise(function (resolve) {
+            let init = setInterval(function () {
+                if (mabotSensorStatesManager.statusChanged) {
+                    resolve(mabotSensorStatesManager.horizontalJointAngle);
+                    //console.log("horizontal angle:", mabotSensorStatesManager.horizontalJointAngle)
+                    mabotSensorStatesManager.statusChanged = false;
+                    clearInterval(init);
+                }
+            }, 20);
+
+        });
+    }
+
+    getMabotSwingJoint(args) {
+        const mabot_swingJoint_index = Cast.toNumber(args.mabot_swingJoint_index);
+        const event = new CustomEvent('mabot', {
+            detail: {
+                type: 'motion_swingJoint_get_angle',
+                params: {
+                    mabot_swingJoint_index,
+                }
+            }
+        });
+        document.dispatchEvent(event);
+        return new Promise(function (resolve) {
+            let init = setInterval(function () {
+                if (mabotSensorStatesManager.statusChanged) {
+                    resolve(mabotSensorStatesManager.swingJointAngle);
+                    //console.log("swing angle:", mabotSensorStatesManager.swingJointAngle)
+                    mabotSensorStatesManager.statusChanged = false;
+                    clearInterval(init);
+                }
+            }, 20);
+
+        });
+    }
+
+
 
     getMonitored() {
         return {

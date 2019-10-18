@@ -1,7 +1,12 @@
 class MabotSensorStatesManager {
     constructor() {
         this.touchSensor = [];
-        this.motorBall = [];
+        this.motorBallIndex = 0;
+        this.motorBallSpeed = 0;
+        this.motorBallPos = 0;
+        this.horizontalJointAngle = 0;
+        this.swingJointAngle = 0;
+
         this.touch_ball_index = 0;
         this.touch_ball_pressed = null;
 
@@ -21,7 +26,12 @@ class MabotSensorStatesManager {
 
     onSensorStateChanged(data) {
         this.touchSensor = data.touchSensor;
-        this.motorBall = data.motorBall;
+        this.motorBallIndex = data.motorBallIndex;
+        this.motorBallSpeed = data.motorBallSpeed;
+        this.motorBallPos = data.motorBallPos;
+        this.horizontalJointAngle = data.horizontalJointAngle;
+        this.swingJointAngle = data.swingJointAngle;
+
         this.touch_ball_index = data.touch_ball_index;
         this.touch_ball_pressed = data.touch_ball_pressed;
 

@@ -85,6 +85,9 @@ class Scratch3SensingBlocks {
             bell_detect_get_color_value: this.DetectGetColorValue,
             bell_detect_get_infrared_value: this.DetectGetInfraredValue,
             bell_detect_get_gyro_value: this.DetectGetGyroValue,
+
+            bell_detect_reset_gyro : this.DetectResetGyro,
+            bell_detect_set_color_mode : this.DetectSetColorMode,
         };
     }
 
@@ -573,6 +576,7 @@ class Scratch3SensingBlocks {
     }
 
     DetectGetGyroValue(args) {
+        const direction = Cast.toString(args.DIRECTION);
         const event = new CustomEvent('mabot', {
             detail: {
                 type: 'bell_detect_gyro_angle_value',
@@ -584,19 +588,52 @@ class Scratch3SensingBlocks {
         return new Promise(function (resolve) {
             let init1 = setInterval(function () {
                 if (mabotSensorStatesManager.statusChanged) {
-                    let detectedAngle = [];
+                    // let detectedAngle = [];
+                    // if (direction === "gyro_x")
+                    //     detectedAngle[0] = (mabotSensorStatesManager.gyro_x[0] + mabotSensorStatesManager.gyro_x[1] * 256) % 360;
+                    // else if (direction === "gyro_y")
+                    //     detectedAngle[1] = (mabotSensorStatesManager.gyro_y[0] + mabotSensorStatesManager.gyro_y[1] * 256) % 360;
+                    // else if (direction === "gyro_z")
+                    //     detectedAngle[2] = (mabotSensorStatesManager.gyro_z[0] + mabotSensorStatesManager.gyro_z[1] * 256) % 360;
+                    // resolve(detectedAngle);
+                    let detectedAngle = 0;
                     if (direction === "gyro_x")
-                        detectedAngle[0] = (mabotSensorStatesManager.gyro_x[0] + mabotSensorStatesManager.gyro_x[1] * 256) % 360;
+                        detectedAngle = mabotSensorStatesManager.gyro_x[0] + mabotSensorStatesManager.gyro_x[1] * 256;
                     else if (direction === "gyro_y")
-                        detectedAngle[1] = (mabotSensorStatesManager.gyro_y[0] + mabotSensorStatesManager.gyro_y[1] * 256) % 360;
+                        detectedAngle = mabotSensorStatesManager.gyro_y[0] + mabotSensorStatesManager.gyro_y[1] * 256;
                     else if (direction === "gyro_z")
-                        detectedAngle[2] = (mabotSensorStatesManager.gyro_z[0] + mabotSensorStatesManager.gyro_z[1] * 256) % 360;
+                        detectedAngle = mabotSensorStatesManager.gyro_z[0] + mabotSensorStatesManager.gyro_z[1] * 256;
+                    detectedAngle = detectedAngle % 360;
                     resolve(detectedAngle);
                     mabotSensorStatesManager.statusChanged = false;
                     clearInterval(init1);
                 }
             }, 20);
         });
+    }
+
+    DetectResetGyro(){
+        const event = new CustomEvent('mabot', {
+            detail: {
+                type: 'bell_detect_reset_gyro',
+                params: {}
+            }
+        });
+        document.dispatchEvent(event);
+    }
+
+    DetectSetColorMode(args){
+        const colorSensorIndex = Cast.toNumber(args.indexOfColorSensor);
+        const colorMode = Cast.toNumber(args.colorMode);
+        const event = new CustomEvent('mabot', {
+            detail: {
+                type: 'bell_detect_set_color_mode',
+                params: {
+                    colorSensorIndex, colorMode
+                }
+            }
+        });
+        document.dispatchEvent(event);
     }
 }
 
