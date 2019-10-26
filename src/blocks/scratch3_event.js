@@ -32,6 +32,12 @@ class Scratch3EventBlocks {
             bell_event_gyro_cm: this.gyroSensor, // 当陀螺仪的[俯仰角度,翻滚角度,旋转角度] [=>,=,<=][0,0,20]
             bell_event_infrared_cm: this.infraredSensor, // 当红外传感器（1） [=>,=,<=] 距离 [0,0,20]
             bell_event_touch_press: this.touchSensor, // 当触控球（1）的状态为 [按下，没按下]
+
+            event_bell_mobile_shake: this.mobileIsShake,
+            event_bell_mobile_hear_sound: this.mobileIsHearSound,
+            event_bell_mobile_tilt: this.mobileIsTilt,
+            event_bell_finger_slide: this.fingerIsSlide
+
         };
     }
 
@@ -159,6 +165,23 @@ class Scratch3EventBlocks {
 
 
     }
+
+    mobileIsShake(args, util) {
+        return false;
+    }
+
+    mobileIsHearSound(args, util) {
+        return false;
+    }
+
+    mobileIsTilt(args, util) {
+        return false;
+    }
+
+    fingerIsSlide(args, util) {
+        return false;
+    }
+
 }
 
 module.exports = Scratch3EventBlocks;

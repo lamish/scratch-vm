@@ -87,7 +87,7 @@ class Scratch3SensingBlocks {
             bell_detect_get_gyro_value: this.DetectGetGyroValue,
 
             bell_detect_reset_gyro : this.DetectResetGyro,
-            bell_detect_set_color_mode : this.DetectSetColorMode,
+            bell_detect_set_color_mode : this.DetectSetColorMode
         };
     }
 
@@ -635,6 +635,8 @@ class Scratch3SensingBlocks {
         });
         document.dispatchEvent(event);
     }
+  
+
 }
 
 module.exports = Scratch3SensingBlocks;
