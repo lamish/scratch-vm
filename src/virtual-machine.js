@@ -252,6 +252,7 @@ class VirtualMachine extends EventEmitter {
      * @param {object} data Any data object to post to the I/O device.
      */
     postIOData (device, data) {
+        console.log(device, ": device", "----", data, "__data");
         if (this.runtime.ioDevices[device]) {
             this.runtime.ioDevices[device].postData(data);
         }

@@ -86,6 +86,9 @@ class Scratch3MakeyMakeyBlocks {
         this.keyPressed = this.keyPressed.bind(this);
         this.runtime.on('KEY_PRESSED', this.keyPressed);
 
+        this.sensorColor = this.sensorColor.bind(this);
+        this.runtime.on('SENSOR_RUN', this.sensorColor);
+
         this._clearkeyPressBuffer = this._clearkeyPressBuffer.bind(this);
         this.runtime.on('PROJECT_STOP_ALL', this._clearkeyPressBuffer);
 
@@ -310,12 +313,18 @@ class Scratch3MakeyMakeyBlocks {
         return (isDown && this.frameToggle);
     }
 
+    sensorColor (data) {
+        console.log("sensorColor: ", data);
+        return 
+    }
+
     /*
      * A function called on the KEY_PRESSED event, to update the key press
      * buffer and check if any of the key sequences have been completed.
      * @param {string} key A scratch key name.
      */
     keyPressed (key) {
+        console.log(key, ": keyPressed");
         // Store only the first word of the Scratch key name, so that e.g. when
         // "left arrow" is pressed, we store "LEFT", which matches KEY_ID_LEFT
         key = key.split(' ')[0];

@@ -1,4 +1,5 @@
 const Cast = require('../util/cast');
+const mabotSensorStatesManager = require('../bell/mabotSensorStatesManager');
 
 class Scratch3EventBlocks {
     constructor (runtime) {
@@ -16,6 +17,14 @@ class Scratch3EventBlocks {
                 KEY_OPTION: 'any'
             });
         });
+
+        this.runtime.on('SENSOR_RUN', key => {
+            this.runtime.startHats('bell_event_color_type',{
+                COLOR: key
+            })
+        });
+
+        console.log(this.runtime.ioDevices, "__this.runtime.ioDevices");
     }
 
     /**
@@ -62,6 +71,9 @@ class Scratch3EventBlocks {
             },
             event_whenbroadcastreceived: {
                 restartExistingThreads: true
+            },
+            bell_event_color_type: {
+                restartExistingThreads: false
             }
         };
     }
@@ -134,30 +146,91 @@ class Scratch3EventBlocks {
             }
         }
     }
-
-    colorSensor(args){
-        const target_color_number = Cast.toNumber(args.COLOR_NUM);
-        const target_color = Cast.toNumber(args.COLOR);
-
+    
+    colorSensor(args, util){
+        // util.startBranch(1, true);
+        console.log('colorSensor args--:',args, util);
+         //setInterval(() => {
+            const target_color_number = Cast.toNumber(args.COLOR_NUM);
+            const target_color = Cast.toNumber(args.COLOR);
+            const target_mode = 3; // 模式 1：环境光模式数据2：反射模式数据3：颜色模式数据
+            const event = new CustomEvent('mabot', {
+                detail: {
+                    type: 'bell_event_color_type',
+                    params: {
+                        target_color_number, 
+                        target_mode
+                    }
+                }
+            });
+            document.dispatchEvent(event);
+            
+            return new Promise(function (resolve) {
+                if (mabotSensorStatesManager.statusChanged) {
+                    if (mabotSensorStatesManager.colorSensorIndex === target_color_number && mabotSensorStatesManager.colorData[0] === target_color) {
+                        console.log("color equals，");
+                        resolve(true);                        
+                    } else {
+                        console.log("color not equals，");
+                        resolve(false);
+                    }
+                    mabotSensorStatesManager.statusChanged = false;
+                }
+            });
+        // }, 200)
+        // return this.wait();
     }
 
     gyroSensor(args){
         const target_gyro = Cast.toNumber(args.GYRO);
         const target_gyro_as = Cast.toNumber(args.JUDGE);
         const target_gyro_value = Cast.toNumber(args.DISTANCE);
+
+        const event = new CustomEvent('mabot', {
+            detail: {
+                type: 'bell_event_gyro_cm',
+                params: {
+                    target_gyro, 
+                    target_gyro_as,
+                    target_gyro_value
+                }
+            }
+        });
+        document.dispatchEvent(event);
     }
 
     infraredSensor(args){
         const target_infrared = Cast.toNumber(args.INFRARED);
         const target_infrared_as = Cast.toNumber(args.JUDGE);
         const target_infrared_value = Cast.toNumber(args.DISTANCE);
+
+        const event = new CustomEvent('mabot', {
+            detail: {
+                type: 'bell_event_infrared_cm',
+                params: {
+                    target_infrared, 
+                    target_infrared_as,
+                    target_infrared_value
+                }
+            }
+        });
+        document.dispatchEvent(event);
     }
 
     touchSensor(args){
         const target_touch = Cast.toNumber(args.TOUCH);
         const target_touch_isPress = Cast.toNumber(args.TOUCHPRESS);
 
-
+        const event = new CustomEvent('mabot', {
+            detail: {
+                type: 'bell_event_touch_press',
+                params: {
+                    target_touch, 
+                    target_touch_isPress
+                }
+            }
+        });
+        document.dispatchEvent(event);
     }
 }
 
