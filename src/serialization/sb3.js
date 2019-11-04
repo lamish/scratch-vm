@@ -460,7 +460,11 @@ const serializeTarget = function (target, extensions) {
     obj.costumes = target.costumes.map(serializeCostume);
     obj.sounds = target.sounds.map(serializeSound);
     if (target.hasOwnProperty('volume')) obj.volume = target.volume;
-    if (target.hasOwnProperty('layerOrder')) obj.layerOrder = target.layerOrder;
+    if (target.hasOwnProperty('layerOrder')){
+        obj.layerOrder = target.layerOrder;
+        // eslint-disable-next-line no-console
+        // console.log(`obj.layerOrder:${JSON.stringify(obj.layerOrder)}`);
+    }
     if (obj.isStage) { // Only the stage should have these properties
         if (target.hasOwnProperty('tempo')) obj.tempo = target.tempo;
         if (target.hasOwnProperty('videoTransparency')) obj.videoTransparency = target.videoTransparency;
@@ -485,6 +489,8 @@ const serializeTarget = function (target, extensions) {
 
 const getSimplifiedLayerOrdering = function (targets) {
     const layerOrders = targets.map(t => t.getLayerOrder());
+    // eslint-disable-next-line no-console
+    // console.log(`layerOrders:${JSON.stringify(layerOrders)}`);
     return MathUtil.reducedSortOrdering(layerOrders);
 };
 
@@ -529,7 +535,8 @@ const serialize = function (runtime, targetId) {
         runtime.targets.filter(target => target.isOriginal);
 
     const layerOrdering = getSimplifiedLayerOrdering(originalTargetsToSerialize);
-
+    // eslint-disable-next-line no-console
+    // console.log(`layerOrdering:${JSON.stringify(layerOrdering)}`);
     const flattenedOriginalTargets = originalTargetsToSerialize.map(t => t.toJSON());
 
     // If the renderer is attached, and we're serializing a whole project (not a sprite)
@@ -537,6 +544,8 @@ const serialize = function (runtime, targetId) {
     if (runtime.renderer && !targetId) {
         flattenedOriginalTargets.forEach((t, index) => {
             t.layerOrder = layerOrdering[index];
+            // eslint-disable-next-line no-console
+            // console.log(`t.layerOrder:${JSON.stringify(t.layerOrder)}`);
         });
     }
 

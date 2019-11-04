@@ -886,7 +886,12 @@ class RenderedTarget extends Target {
 
     getLayerOrder () {
         if (this.renderer) {
-            return this.renderer.getDrawableOrder(this.drawableID);
+            let result = this.renderer.getDrawableOrder(this.drawableID);
+            // Add by PeiYuMo
+            if (this.isSprite && !this.isStage && result === 0) {
+                result = 1;
+            }
+            return result;
         }
         return null;
     }
