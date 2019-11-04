@@ -26,6 +26,7 @@ const Mouse = require('../io/mouse');
 const MouseWheel = require('../io/mouseWheel');
 const UserData = require('../io/userData');
 const Video = require('../io/video');
+const Sensor = require('../io/sensor'); // 自定义传感器
 
 const StringUtil = require('../util/string-util');
 const uid = require('../util/uid');
@@ -317,7 +318,8 @@ class Runtime extends EventEmitter {
             mouse: new Mouse(this),
             mouseWheel: new MouseWheel(this),
             userData: new UserData(),
-            video: new Video(this)
+            video: new Video(this),
+            sensor: new Sensor(this)
         };
 
         /**

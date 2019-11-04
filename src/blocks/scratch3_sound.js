@@ -467,7 +467,7 @@ class Scratch3SoundBlocks {
             resolve();
           }, duration);
         });
-      }
+    }
 }
 
 module.exports = Scratch3SoundBlocks;
