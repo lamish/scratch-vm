@@ -2,7 +2,7 @@ const Cast = require('../util/cast');
 const mabotSensorStatesManager = require('../bell/mabotSensorStatesManager');
 
 class Scratch3EventBlocks {
-    constructor (runtime) {
+    constructor(runtime) {
         /**
          * The runtime instantiating this block package.
          * @type {Runtime}
@@ -19,24 +19,26 @@ class Scratch3EventBlocks {
         });
 
         this.runtime.on('SENSOR_RUN', key => {
-            this.runtime.startHats('bell_event_color_type',{
+            this.runtime.startHats('bell_event_color_type', {
                 COLOR: key
-            })
+            });
         });
 
-        console.log(this.runtime.ioDevices, "__this.runtime.ioDevices");
+        window.initForColorSensor = null;
+        console.log("__this.runtime.ioDevices", this.runtime);
     }
 
     /**
      * Retrieve the block primitives implemented by this package.
      * @return {object.<string, Function>} Mapping of opcode to Function.
      */
-    getPrimitives () {
+    getPrimitives() {
         return {
             event_whentouchingobject: this.touchingObject,
             event_broadcast: this.broadcast,
             event_broadcastandwait: this.broadcastAndWait,
             event_whengreaterthan: this.hatGreaterThanPredicate,
+
             bell_event_color_type: this.colorSensor, // 当颜色传感器（1） [=>,=,<=] (1)
             bell_event_gyro_cm: this.gyroSensor, // 当陀螺仪的[俯仰角度,翻滚角度,旋转角度] [=>,=,<=][0,0,20]
             bell_event_infrared_cm: this.infraredSensor, // 当红外传感器（1） [=>,=,<=] 距离 [0,0,20]
@@ -50,7 +52,7 @@ class Scratch3EventBlocks {
         };
     }
 
-    getHats () {
+    getHats() {
         return {
             event_whenflagclicked: {
                 restartExistingThreads: true
@@ -79,28 +81,28 @@ class Scratch3EventBlocks {
                 restartExistingThreads: true
             },
             bell_event_color_type: {
-                restartExistingThreads: false
+                restartExistingThreads: true
             }
         };
     }
 
-    touchingObject (args, util) {
+    touchingObject(args, util) {
         return util.target.isTouchingObject(args.TOUCHINGOBJECTMENU);
     }
 
-    hatGreaterThanPredicate (args, util) {
+    hatGreaterThanPredicate(args, util) {
         const option = Cast.toString(args.WHENGREATERTHANMENU).toLowerCase();
         const value = Cast.toNumber(args.VALUE);
         switch (option) {
-        case 'timer':
-            return util.ioQuery('clock', 'projectTimer') > value;
-        case 'loudness':
-            return this.runtime.audioEngine && this.runtime.audioEngine.getLoudness() > value;
+            case 'timer':
+                return util.ioQuery('clock', 'projectTimer') > value;
+            case 'loudness':
+                return this.runtime.audioEngine && this.runtime.audioEngine.getLoudness() > value;
         }
         return false;
     }
 
-    broadcast (args, util) {
+    broadcast(args, util) {
         const broadcastVar = util.runtime.getTargetForStage().lookupBroadcastMsg(
             args.BROADCAST_OPTION.id, args.BROADCAST_OPTION.name);
         if (broadcastVar) {
@@ -111,7 +113,7 @@ class Scratch3EventBlocks {
         }
     }
 
-    broadcastAndWait (args, util) {
+    broadcastAndWait(args, util) {
         const broadcastVar = util.runtime.getTargetForStage().lookupBroadcastMsg(
             args.BROADCAST_OPTION.id, args.BROADCAST_OPTION.name);
         if (broadcastVar) {
@@ -152,42 +154,58 @@ class Scratch3EventBlocks {
             }
         }
     }
-    
-    colorSensor(args, util){
+
+    colorSensor(args, util) {
         // util.startBranch(1, true);
-        console.log('colorSensor args--:',args, util);
-         //setInterval(() => {
-            const target_color_number = Cast.toNumber(args.COLOR_NUM);
-            const target_color = Cast.toNumber(args.COLOR);
-            const target_mode = 3; // 模式 1：环境光模式数据2：反射模式数据3：颜色模式数据
-            const event = new CustomEvent('mabot', {
-                detail: {
-                    type: 'bell_event_color_type',
-                    params: {
-                        target_color_number, 
-                        target_mode
-                    }
+        // console.log('colorSensor args--:', args, util);
+        // if (window.initForColorSensor == null) {
+        //     window.initForColorSensor = setInterval(() => {
+        //         const target_color_number = Cast.toNumber(args.COLOR_NUM);
+        //         const target_color = Cast.toNumber(args.COLOR);
+        //         const target_mode = 3; // 模式 1：环境光模式数据2：反射模式数据3：颜色模式数据
+        //         const event = new CustomEvent('mabot', {
+        //             detail: {
+        //                 type: 'bell_event_color_type',
+        //                 params: {
+        //                     target_color_number,
+        //                     target_mode
+        //                 }
+        //             }
+        //         });
+        //         document.dispatchEvent(event);
+        //     }, 200);
+
+        const target_color_number = Cast.toNumber(args.COLOR_NUM);
+        const target_color = Cast.toNumber(args.COLOR);
+        const target_mode = 3; // 模式 1：环境光模式数据2：反射模式数据3：颜色模式数据
+        const event = new CustomEvent('mabot', {
+            detail: {
+                type: 'bell_detect_get_color_value',
+                params: {
+                    target_color_number,
+                    target_mode
                 }
-            });
-            document.dispatchEvent(event);
-            
-            return new Promise(function (resolve) {
-                if (mabotSensorStatesManager.statusChanged) {
-                    if (mabotSensorStatesManager.colorSensorIndex === target_color_number && mabotSensorStatesManager.colorData[0] === target_color) {
-                        console.log("color equals，");
-                        resolve(true);                        
-                    } else {
-                        console.log("color not equals，");
-                        resolve(false);
-                    }
-                    mabotSensorStatesManager.statusChanged = false;
+            }
+        });
+        document.dispatchEvent(event);
+
+        return new Promise(function (resolve) {
+            if (mabotSensorStatesManager.statusChanged) {
+                if (mabotSensorStatesManager.colorSensorIndex === target_color_number && mabotSensorStatesManager.colorData[0] === target_color) {
+                    console.log("color equals，");
+                    resolve(true);
+                } else {
+                    console.log("color not equals，");
+                    resolve(false);
                 }
-            });
-        // }, 200)
-        // return this.wait();
+                mabotSensorStatesManager.statusChanged = false;
+            }
+        });
+        //window.sessionStorage.setItem("colorSensor", this.initForColorSensor);
     }
 
-    gyroSensor(args){
+
+    gyroSensor(args) {
         const target_gyro = Cast.toNumber(args.GYRO);
         const target_gyro_as = Cast.toNumber(args.JUDGE);
         const target_gyro_value = Cast.toNumber(args.DISTANCE);
@@ -196,7 +214,7 @@ class Scratch3EventBlocks {
             detail: {
                 type: 'bell_event_gyro_cm',
                 params: {
-                    target_gyro, 
+                    target_gyro,
                     target_gyro_as,
                     target_gyro_value
                 }
@@ -205,7 +223,7 @@ class Scratch3EventBlocks {
         document.dispatchEvent(event);
     }
 
-    infraredSensor(args){
+    infraredSensor(args) {
         const target_infrared = Cast.toNumber(args.INFRARED);
         const target_infrared_as = Cast.toNumber(args.JUDGE);
         const target_infrared_value = Cast.toNumber(args.DISTANCE);
@@ -214,7 +232,7 @@ class Scratch3EventBlocks {
             detail: {
                 type: 'bell_event_infrared_cm',
                 params: {
-                    target_infrared, 
+                    target_infrared,
                     target_infrared_as,
                     target_infrared_value
                 }
@@ -223,7 +241,7 @@ class Scratch3EventBlocks {
         document.dispatchEvent(event);
     }
 
-    touchSensor(args){
+    touchSensor(args) {
         const target_touch = Cast.toNumber(args.TOUCH);
         const target_touch_isPress = Cast.toNumber(args.TOUCHPRESS);
 
@@ -231,7 +249,7 @@ class Scratch3EventBlocks {
             detail: {
                 type: 'bell_event_touch_press',
                 params: {
-                    target_touch, 
+                    target_touch,
                     target_touch_isPress
                 }
             }
