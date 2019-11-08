@@ -171,6 +171,7 @@ class VirtualMachine extends EventEmitter {
         const mabotSensorStatesManager = require('./bell/mabotSensorStatesManager');
 
         this.on("mabot_sensor_change", data => {
+            // console.log("virtual machine ----- mabot_sensor_change:  ", data);
             mabotSensorStatesManager.onSensorStateChanged(data);
         });
     }

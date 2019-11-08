@@ -377,6 +377,7 @@ class Thread {
      */
     goToNextBlock () {
         const nextBlockId = this.target.blocks.getNextBlock(this.peekStack());
+        //console.log(`nextBlockId: ${nextBlockId}`);
         this.reuseStackForNextBlock(nextBlockId);
     }
 

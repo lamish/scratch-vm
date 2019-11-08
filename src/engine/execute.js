@@ -54,10 +54,11 @@ const handleReport = function (resolvedValue, sequencer, thread, blockCached, la
     const currentBlockId = blockCached.id;
     const opcode = blockCached.opcode;
     const isHat = blockCached._isHat;
-
+    // console.log("resolvedValue: ",resolvedValue);
     thread.pushReportedValue(resolvedValue);
     if (isHat) {
         // Hat predicate was evaluated.
+        //console.log("handle report in excution");
         if (sequencer.runtime.getIsEdgeActivatedHat(opcode)) {
             // If this is an edge-activated hat, only proceed if the value is
             // true and used to be false, or the stack was activated explicitly
@@ -68,7 +69,6 @@ const handleReport = function (resolvedValue, sequencer, thread, blockCached, la
                     currentBlockId,
                     resolvedValue
                 );
-
                 const edgeWasActivated = hasOldEdgeValue ? (!oldEdgeValue && resolvedValue) : resolvedValue;
                 if (!edgeWasActivated) {
                     sequencer.retireThread(thread);
@@ -78,6 +78,7 @@ const handleReport = function (resolvedValue, sequencer, thread, blockCached, la
             // Not an edge-activated hat: retire the thread
             // if predicate was false.
             sequencer.retireThread(thread);
+            //console.log("sequencer.retireThread");
         }
     } else {
         // In a non-hat, report the value visually if necessary if
@@ -105,6 +106,7 @@ const handleReport = function (resolvedValue, sequencer, thread, blockCached, la
 };
 
 const handlePromise = (primitiveReportedValue, sequencer, thread, blockCached, lastOperation) => {
+    // console.log("primitiveReportedValue : ", primitiveReportedValue + ", lastOperation:" , lastOperation, blockCached);
     if (thread.status === Thread.STATUS_RUNNING) {
         // Primitive returned a promise; automatically yield thread.
         thread.status = Thread.STATUS_PROMISE_WAIT;
@@ -160,7 +162,7 @@ const handlePromise = (primitiveReportedValue, sequencer, thread, blockCached, l
  * @param {object} cached default set of cached values
  */
 class BlockCached {
-    constructor (blockContainer, cached) {
+    constructor(blockContainer, cached) {
         /**
          * Block id in its parent set of blocks.
          * @type {string}
@@ -399,7 +401,6 @@ const execute = function (sequencer, thread) {
             return;
         }
     }
-
     const ops = blockCached._ops;
     const length = ops.length;
     let i = 0;
@@ -508,8 +509,6 @@ const execute = function (sequencer, thread) {
             // runtime.profiler.stop(blockFunctionProfilerId);
             runtime.profiler.records.push(runtime.profiler.STOP, 0);
         }
-        //console.log("mylog argValues: ",argValues);
-        //console.log("mylog  primitiveReportedValue: ",primitiveReportedValue);
         // If it's a promise, wait until promise resolves.
         if (isPromise(primitiveReportedValue)) {
             handlePromise(primitiveReportedValue, sequencer, thread, opCached, lastOperation);

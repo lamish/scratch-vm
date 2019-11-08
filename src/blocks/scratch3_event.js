@@ -81,7 +81,7 @@ class Scratch3EventBlocks {
                 restartExistingThreads: true
             },
             bell_event_color_type: {
-                restartExistingThreads: true
+                restartExistingThreads: true,
             }
         };
     }
@@ -175,32 +175,51 @@ class Scratch3EventBlocks {
         //         document.dispatchEvent(event);
         //     }, 200);
 
-        const target_color_number = Cast.toNumber(args.COLOR_NUM);
+        const mabot_color_sensor_index = Cast.toNumber(args.COLOR_NUM);
         const target_color = Cast.toNumber(args.COLOR);
         const target_mode = 3; // 模式 1：环境光模式数据2：反射模式数据3：颜色模式数据
         const event = new CustomEvent('mabot', {
             detail: {
                 type: 'bell_detect_get_color_value',
                 params: {
-                    target_color_number,
+                    mabot_color_sensor_index,
                     target_mode
                 }
             }
         });
         document.dispatchEvent(event);
 
-        return new Promise(function (resolve) {
-            if (mabotSensorStatesManager.statusChanged) {
-                if (mabotSensorStatesManager.colorSensorIndex === target_color_number && mabotSensorStatesManager.colorData[0] === target_color) {
-                    console.log("color equals，");
-                    resolve(true);
-                } else {
-                    console.log("color not equals，");
-                    resolve(false);
-                }
-                mabotSensorStatesManager.statusChanged = false;
+        if (mabotSensorStatesManager.statusChanged) {
+            mabotSensorStatesManager.statusChanged = false;
+            if (mabotSensorStatesManager.colorSensorIndex === mabot_color_sensor_index && mabotSensorStatesManager.colorData[0] === target_color) {
+                console.log("color equals，");
+                return true;
+            } else {
+                console.log("color not equals，");
+                if (mabotSensorStatesManager.colorSensorIndex !== mabot_color_sensor_index)
+                    console.log(`mabotSensorStatesManager.colorSensorIndex:${mabotSensorStatesManager.colorSensorIndex},mabot_color_sensor_index:${mabot_color_sensor_index}`)
+                if (mabotSensorStatesManager.colorData[0] !== target_color)
+                    console.log(`mabotSensorStatesManager.colorData[0]: ${mabotSensorStatesManager.colorData[0]},target_color: ${target_color}`)
+                return false;
             }
-        });
+        }
+
+        // return new Promise(function (resolve) {
+        //     if (mabotSensorStatesManager.statusChanged) {
+        //         if (mabotSensorStatesManager.colorSensorIndex === mabot_color_sensor_index && mabotSensorStatesManager.colorData[0] === target_color) {
+        //             console.log("color equals，");
+        //             resolve(true);
+        //         } else {
+        //             console.log("color not equals，");
+        //             if (mabotSensorStatesManager.colorSensorIndex !== mabot_color_sensor_index)
+        //                 console.log(`mabotSensorStatesManager.colorSensorIndex:${mabotSensorStatesManager.colorSensorIndex},mabot_color_sensor_index:${mabot_color_sensor_index}`)
+        //             if (mabotSensorStatesManager.colorData[0] !== target_color)
+        //                 console.log(`mabotSensorStatesManager.colorData[0]: ${mabotSensorStatesManager.colorData[0]},target_color: ${target_color}`)
+        //             resolve(false);
+        //         }
+        //         mabotSensorStatesManager.statusChanged = false;
+        //     }
+        // });
         //window.sessionStorage.setItem("colorSensor", this.initForColorSensor);
     }
 

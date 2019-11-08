@@ -1521,7 +1521,8 @@ class Runtime extends EventEmitter {
         thread.blockContainer = thread.updateMonitor ?
             this.monitorBlocks :
             target.blocks;
-
+        // console .log("thread.target :",thread.target);
+        // console.log("thread.blockContainer: ",thread.blockContainer);
         thread.pushStack(id);
         this.threads.push(thread);
         return thread;
@@ -1668,6 +1669,8 @@ class Runtime extends EventEmitter {
         }
         for (let t = targets.length - 1; t >= 0; t--) {
             const target = targets[t];
+            // console.log("opcode: ", opcode);
+            // console.log("target.blocks : ", target.blocks);
             const scripts = BlocksRuntimeCache.getScripts(target.blocks, opcode);
             for (let j = 0; j < scripts.length; j++) {
                 f(scripts[j], target);
@@ -1705,8 +1708,6 @@ class Runtime extends EventEmitter {
                 blockId: topBlockId,
                 fieldsOfInputs: hatFields
             } = script;
-            // console.log("topBlockId : ", topBlockId);
-            // console.log("hatFields : ", hatFields);
             // console.log("script : ", script);
             // console.log(`startHat_script[0]: ${JSON.stringify(script[0])},startHat_script[1]: ${JSON.stringify(script[1])},startHat_target : ${JSON.stringify(target[0])}`,);
             // Match any requested fields.
@@ -1748,12 +1749,16 @@ class Runtime extends EventEmitter {
                 }
             }
             // Start the thread with this top block.
+
+            // console.log(`topBlockId: ${topBlockId},target: ${target.name}`);
             newThreads.push(this._pushThread(topBlockId, target));
         }, optTarget);
         // For compatibility with Scratch 2, edge triggered hats need to be processed before
         // threads are stepped. See ScratchRuntime.as for original implementation
         newThreads.forEach(thread => {
             execute(this.sequencer, thread);
+            console.log("this.sequencer:", this.sequencer);
+            // console.log("thread : ",thread);
             thread.goToNextBlock();
         });
         return newThreads;
