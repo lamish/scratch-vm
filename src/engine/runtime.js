@@ -1708,8 +1708,6 @@ class Runtime extends EventEmitter {
                 blockId: topBlockId,
                 fieldsOfInputs: hatFields
             } = script;
-            // console.log("script : ", script);
-            // console.log(`startHat_script[0]: ${JSON.stringify(script[0])},startHat_script[1]: ${JSON.stringify(script[1])},startHat_target : ${JSON.stringify(target[0])}`,);
             // Match any requested fields.
             // For example: ensures that broadcasts match.
             // This needs to happen before the block is evaluated
@@ -1749,16 +1747,12 @@ class Runtime extends EventEmitter {
                 }
             }
             // Start the thread with this top block.
-
-            // console.log(`topBlockId: ${topBlockId},target: ${target.name}`);
             newThreads.push(this._pushThread(topBlockId, target));
         }, optTarget);
         // For compatibility with Scratch 2, edge triggered hats need to be processed before
         // threads are stepped. See ScratchRuntime.as for original implementation
         newThreads.forEach(thread => {
             execute(this.sequencer, thread);
-            console.log("this.sequencer:", this.sequencer);
-            // console.log("thread : ",thread);
             thread.goToNextBlock();
         });
         return newThreads;
