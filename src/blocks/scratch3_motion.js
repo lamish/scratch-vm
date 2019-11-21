@@ -66,7 +66,6 @@ class Scratch3MotionBlocks {
     }
 
     setMabotMotorBallPower(args) {
-        debugger
         const mabot_motor_ball_index = Cast.toNumber(args.mabot_motor_ball_index);
         const rotate_direction = Cast.toString(args.rotate_direction);
         const power = Cast.toNumber(args.power);
