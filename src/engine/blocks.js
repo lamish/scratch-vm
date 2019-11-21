@@ -540,6 +540,7 @@ class Blocks {
             return;
         }
         // Create new block.
+        // console.log("createBlock: ",block);
         this._blocks[block.id] = block;
         // Push block id to scripts array.
         // Blocks are added as a top-level stack if they are marked as a top-block
@@ -1173,6 +1174,7 @@ class Blocks {
         const i = this._scripts.indexOf(topBlockId);
         if (i > -1) return; // Already in scripts.
         this._scripts.push(topBlockId);
+        // console.log("topBlockId: ",topBlockId);
         // Update `topLevel` property on the top block.
         this._blocks[topBlockId].topLevel = true;
     }

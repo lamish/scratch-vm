@@ -171,6 +171,7 @@ class VirtualMachine extends EventEmitter {
         const mabotSensorStatesManager = require('./bell/mabotSensorStatesManager');
 
         this.on("mabot_sensor_change", data => {
+            // console.log("virtual machine ----- mabot_sensor_change:  ", data);
             mabotSensorStatesManager.onSensorStateChanged(data);
         });
     }
@@ -252,6 +253,7 @@ class VirtualMachine extends EventEmitter {
      * @param {object} data Any data object to post to the I/O device.
      */
     postIOData (device, data) {
+        // console.log(device, ": device", "----", data, "__data");
         if (this.runtime.ioDevices[device]) {
             this.runtime.ioDevices[device].postData(data);
         }
@@ -546,7 +548,8 @@ class VirtualMachine extends EventEmitter {
             if (!wholeProject) {
                 this.editingTarget.fixUpVariableReferences();
             }
-
+            // eslint-disable-next-line no-console
+            // console.log(`targets1:${JSON.stringify(targets)}`);
             // Update the VM user's knowledge of targets and blocks on the workspace.
             this.emitTargetsUpdate(false /* Don't emit project change */);
             this.emitWorkspaceUpdate();
@@ -632,7 +635,10 @@ class VirtualMachine extends EventEmitter {
         const sb3 = require('./serialization/sb3');
         return sb3
             .deserialize(sprite, this.runtime, zip, true)
-            .then(({targets, extensions}) => this.installTargets(targets, extensions, false));
+            .then(({targets, extensions}) => {
+                // eslint-disable-next-line no-console
+                this.installTargets(targets, extensions, false);
+            });
     }
 
     /**
