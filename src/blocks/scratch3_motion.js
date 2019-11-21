@@ -66,20 +66,67 @@ class Scratch3MotionBlocks {
     }
 
     setMabotMotorBallPower(args) {
+        debugger
         const mabot_motor_ball_index = Cast.toNumber(args.mabot_motor_ball_index);
         const rotate_direction = Cast.toString(args.rotate_direction);
         const power = Cast.toNumber(args.power);
         const rotate_for_seconds = Cast.toNumber(args.rotate_for_seconds);
-        const event = new CustomEvent('mabot', {
-            detail: {
-                type: 'motion_motorBall_rotate_on_power_for_seconds',
-                params: {
-                    mabot_motor_ball_index, rotate_direction,
-                    power, rotate_for_seconds
-                }
+        const block = args.BLOCK.indexOf('onebyone.png') > -1 ? true : false; // 是否同步执行
+        const mutation = args.mutation ? (args.mutation.children || []) : []; // 选择多个驱动球时
+
+        const mutationList = mutation.map(item => {
+            return {
+                mabot_motor_ball_index: item.seq,
+                rotate_direction: item.rotate_direction,
+                power: item.power,
+                rotate_for_seconds: item.rotate_for_seconds
             }
         });
+
+        const mainBallObj = {
+            mabot_motor_ball_index,
+            rotate_direction,
+            power,
+            rotate_for_seconds
+        }
+        const mabot_ball_list = [mainBallObj, ...mutationList]; 
+
+        console.log(`args`, args)
+        console.log(`BLOCK`, block)
+        console.log(`mabot_ball_list`, mabot_ball_list);
+
+        let event;
+        if(mutationList.length > 0) {
+            event = new CustomEvent('mabot', {
+                detail: {
+                    type: 'motion_motorBall_rotate_on_power_for_seconds_multiple',
+                    params: {
+                        mabot_ball_list,
+                        block
+                    }
+                }
+            });
+        } else {
+            event = new CustomEvent('mabot', {
+                detail: {
+                    type: 'motion_motorBall_rotate_on_power_for_seconds',
+                    params: {
+                        mabot_motor_ball_index, 
+                        rotate_direction,
+                        power, 
+                        rotate_for_seconds,
+                        block
+                    }
+                }
+            });
+        }
+
         document.dispatchEvent(event);
+
+        // 是否阻塞
+        if(!block){
+            return this.wait(rotate_for_seconds);    
+        }
         //return mabotSensorStatesManager.motorBall[mabot_motor_ball_index];
     }
 
@@ -529,6 +576,15 @@ class Scratch3MotionBlocks {
         const limitedCoord = (Math.abs(delta) < 1e-9) ? rounded : coordinate;
 
         return limitedCoord;
+    }
+
+    wait(sec) {
+        const duration = Math.max(0, 1000 * Cast.toNumber(sec));    
+        return new Promise(resolve => {
+            setTimeout(() => {
+            resolve();
+            }, duration);
+        });
     }
 }
 
