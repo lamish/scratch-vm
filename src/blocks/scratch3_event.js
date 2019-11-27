@@ -193,7 +193,8 @@ class Scratch3EventBlocks {
                 type: 'bell_event_color_type',
                 params: {
                     mabot_color_sensor_index,
-                    target_mode
+                    target_mode,
+                    target_color
                 }
             }
         });
@@ -213,25 +214,6 @@ class Scratch3EventBlocks {
                 return false;
             }
         }
-
-        // return new Promise(function (resolve) {
-        //     if (mabotSensorStatesManager.statusChanged) {
-        //         if (mabotSensorStatesManager.colorSensorIndex === mabot_color_sensor_index && mabotSensorStatesManager.colorData[0] === target_color) {
-        //             console.log("color equals，");
-        //             resolve(true);
-        //         } else {
-        //             console.log("color not equals，");
-        //             if (mabotSensorStatesManager.colorSensorIndex !== mabot_color_sensor_index)
-        //                 console.log(`mabotSensorStatesManager.colorSensorIndex:${mabotSensorStatesManager.colorSensorIndex},mabot_color_sensor_index:${mabot_color_sensor_index}`)
-        //             if (mabotSensorStatesManager.colorData[0] !== target_color)
-        //                 console.log(`mabotSensorStatesManager.colorData[0]: ${mabotSensorStatesManager.colorData[0]},target_color: ${target_color}`)
-        //             resolve(false);
-        //         }
-        //         mabotSensorStatesManager.statusChanged = false;
-        //     }
-        // });
-        //window.initForColorSensor = setInterval(()=>{...}, 200);
-        //window.sessionStorage.setItem("colorSensor", this.initForColorSensor);
     }
 
     gyroSensor(args) {
