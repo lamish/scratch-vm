@@ -361,24 +361,24 @@ class Scratch3SoundBlocks {
             detail: {
                 type: 'sound_mabot_set_all_lights_to_one_mode',
                 params: {
-                    target_light, 
+                    target_light,
                     light_mode,
-                    light_color 
+                    light_color
                 }
             }
         });
         document.dispatchEvent(event);
-         
+
         if(args.BLOCK != undefined && args.SECONDS != undefined){
             const block = Cast.toBoolean(args.BLOCK); // 是否阻塞
             const seconds = Cast.toNumber(args.SECONDS); // 持续x秒
             //持续时间
             setTimeout(()=>{
                 this.closedMabotLight(args);
-            }, seconds * 1000); 
+            }, seconds * 1000);
             // 是否阻塞
             if(!block){
-                return this.wait(seconds);    
+                return this.wait(seconds);
             }
         }
     }
@@ -419,10 +419,10 @@ class Scratch3SoundBlocks {
 
     playBuzzer(args){
         const buzzer_tone = Cast.toNumber(args.TONE); // 音调
-        const buzzer_volume = Cast.toNumber(args.VOLUME); // 音阶 
+        const buzzer_volume = Cast.toNumber(args.VOLUME); // 音阶
 
         let volume = this.setBeepNum(buzzer_tone, buzzer_volume);
-        
+
         const event = new CustomEvent('mabot', {
             detail: {
                 type: 'bell_light_play_buzzer',
@@ -439,16 +439,17 @@ class Scratch3SoundBlocks {
             //持续时间
             setTimeout(()=>{
                 this.closeMabotBuzzer();
-            }, seconds * 1000); 
+            }, seconds * 1000);
             // 是否阻塞
             if(!block){
-                return this.wait(seconds);    
+                return this.wait(seconds);
             }
         }
     }
 
     closeMabotBuzzer(){
-        const closedCode = 34;
+        //modify by heping 2019/11/27 停止是32
+        const closedCode = 32;
         const event = new CustomEvent('mabot', {
             detail: {
                 type: 'bell_light_closed_buzzer',
@@ -461,7 +462,7 @@ class Scratch3SoundBlocks {
     }
     // 等待 or 阻塞
     wait(sec) {
-        const duration = Math.max(0, 1000 * Cast.toNumber(sec));    
+        const duration = Math.max(0, 1000 * Cast.toNumber(sec));
         return new Promise(resolve => {
           setTimeout(() => {
             resolve();
