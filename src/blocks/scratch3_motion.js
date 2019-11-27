@@ -94,7 +94,12 @@ class Scratch3MotionBlocks {
         console.log(`BLOCK`, block)
         console.log(`mabot_ball_list`, mabot_ball_list);
 
+        let maxTime = 0;
+
         mabot_ball_list.forEach(item => {
+            if(item.rotate_for_seconds > maxTime) {
+                maxTime = item.rotate_for_seconds;
+            }
             let event = new CustomEvent('mabot', {
                 detail: {
                     type: 'motion_motorBall_rotate_on_power_for_seconds',
@@ -113,7 +118,7 @@ class Scratch3MotionBlocks {
 
         // 是否阻塞
         if(!block){
-            return this.wait(rotate_for_seconds);    
+            return this.wait(maxTime);    
         }
         //return mabotSensorStatesManager.motorBall[mabot_motor_ball_index];
     }
