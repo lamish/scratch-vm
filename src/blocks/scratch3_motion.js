@@ -94,33 +94,22 @@ class Scratch3MotionBlocks {
         console.log(`BLOCK`, block)
         console.log(`mabot_ball_list`, mabot_ball_list);
 
-        let event;
-        if(mutationList.length > 0) {
-            event = new CustomEvent('mabot', {
-                detail: {
-                    type: 'motion_motorBall_rotate_on_power_for_seconds_multiple',
-                    params: {
-                        mabot_ball_list,
-                        block
-                    }
-                }
-            });
-        } else {
-            event = new CustomEvent('mabot', {
+        mabot_ball_list.forEach(item => {
+            let event = new CustomEvent('mabot', {
                 detail: {
                     type: 'motion_motorBall_rotate_on_power_for_seconds',
                     params: {
-                        mabot_motor_ball_index, 
-                        rotate_direction,
-                        power, 
-                        rotate_for_seconds,
-                        block
+                        mabot_motor_ball_index: item.mabot_motor_ball_index, 
+                        rotate_direction: item.rotate_direction,
+                        power: item.power, 
+                        rotate_for_seconds: item.rotate_for_seconds,
                     }
                 }
             });
-        }
+            document.dispatchEvent(event);
+        })
 
-        document.dispatchEvent(event);
+        
 
         // 是否阻塞
         if(!block){
