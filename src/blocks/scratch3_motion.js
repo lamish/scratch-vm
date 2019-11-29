@@ -75,10 +75,10 @@ class Scratch3MotionBlocks {
 
         const mutationList = mutation.map(item => {
             return {
-                mabot_motor_ball_index: item.seq,
-                rotate_direction: item.rotate_direction,
-                power: item.power,
-                rotate_for_seconds: item.rotate_for_seconds
+                mabot_motor_ball_index: Cast.toNumber(item.seq),
+                rotate_direction: Cast.toString(item.rotate_direction),
+                power: Cast.toNumber(item.power),
+                rotate_for_seconds: Cast.toNumber(item.rotate_for_seconds)
             }
         });
 
@@ -88,7 +88,7 @@ class Scratch3MotionBlocks {
             power,
             rotate_for_seconds
         }
-        const mabot_ball_list = [mainBallObj, ...mutationList]; 
+        const mabot_ball_list = [mainBallObj, ...mutationList];
 
         console.log(`args`, args)
         console.log(`BLOCK`, block)
@@ -104,9 +104,9 @@ class Scratch3MotionBlocks {
                 detail: {
                     type: 'motion_motorBall_rotate_on_power_for_seconds',
                     params: {
-                        mabot_motor_ball_index: item.mabot_motor_ball_index, 
+                        mabot_motor_ball_index: item.mabot_motor_ball_index,
                         rotate_direction: item.rotate_direction,
-                        power: item.power, 
+                        power: item.power,
                         rotate_for_seconds: item.rotate_for_seconds,
                     }
                 }
@@ -114,11 +114,11 @@ class Scratch3MotionBlocks {
             document.dispatchEvent(event);
         })
 
-        
+
 
         // 是否阻塞
         if(!block){
-            return this.wait(maxTime);    
+            return this.wait(maxTime);
         }
         //return mabotSensorStatesManager.motorBall[mabot_motor_ball_index];
     }
@@ -663,7 +663,7 @@ class Scratch3MotionBlocks {
     }
 
     wait(sec) {
-        const duration = Math.max(0, 1000 * Cast.toNumber(sec));    
+        const duration = Math.max(0, 1000 * Cast.toNumber(sec));
         return new Promise(resolve => {
             setTimeout(() => {
             resolve();
