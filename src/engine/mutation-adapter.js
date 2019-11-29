@@ -35,6 +35,9 @@ const mutatorTagToObject = function (dom) {
  * @return {object} Object representing the mutation.
  */
 const mutationAdpater = function (mutation) {
+    if(!mutation) {
+        mutation = `<mutation xmlns="http://www.w3.org/1999/xhtml"></mutation>`;
+    }
     let mutationParsed;
     // Check if the mutation is already parsed; if not, parse it.
     if (typeof mutation === 'object') {

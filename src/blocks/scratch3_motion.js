@@ -127,16 +127,43 @@ class Scratch3MotionBlocks {
         const mabot_motor_ball_index = Cast.toNumber(args.mabot_motor_ball_index);
         const rotate_direction = Cast.toString(args.rotate_direction);
         const power = Cast.toNumber(args.power);
-        const event = new CustomEvent('mabot', {
-            detail: {
-                type: 'motion_motorBall_rotate_on_power',
-                params: {
-                    mabot_motor_ball_index, rotate_direction, power
-                }
+        const mutation = args.mutation ? (args.mutation.children || []) : []; // 选择多个驱动球时
+
+        const mutationList = mutation.map(item => {
+            return {
+                mabot_motor_ball_index: item.seq,
+                rotate_direction: item.rotate_direction,
+                power: item.power
             }
         });
-        document.dispatchEvent(event);
-        //return mabotSensorStatesManager.motorBall[mabot_motor_ball_index];
+
+        const mainBallObj = {
+            mabot_motor_ball_index,
+            rotate_direction,
+            power
+        }
+        const mabot_ball_list = [mainBallObj, ...mutationList]; 
+
+
+        let maxTime = 0;
+
+        mabot_ball_list.forEach(item => {
+            if(item.rotate_for_seconds > maxTime) {
+                maxTime = item.rotate_for_seconds;
+            }
+            let event = new CustomEvent('mabot', {
+                detail: {
+                    type: 'motion_motorBall_rotate_on_power',
+                    params: {
+                        mabot_motor_ball_index: item.mabot_motor_ball_index, 
+                        rotate_direction: item.rotate_direction,
+                        power: item.power
+                    }
+                }
+            });
+            document.dispatchEvent(event);
+        })
+
     }
 
     setMabotMotorBallSpeed(args) {
@@ -144,31 +171,95 @@ class Scratch3MotionBlocks {
         const rotate_direction = Cast.toString(args.rotate_direction);
         const speed = Cast.toNumber(args.speed);
         const rotate_for_seconds = Cast.toNumber(args.rotate_for_seconds);
-        const event = new CustomEvent('mabot', {
-            detail: {
-                type: 'motion_motorBall_rotate_on_speed_for_seconds',
-                params: {
-                    mabot_motor_ball_index, rotate_direction,
-                    speed, rotate_for_seconds
-                }
+        const block = args.BLOCK.indexOf('onebyone.png') > -1 ? true : false; // 是否同步执行
+        const mutation = args.mutation ? (args.mutation.children || []) : []; // 选择多个驱动球时
+
+
+        const mutationList = mutation.map(item => {
+            return {
+                mabot_motor_ball_index: item.seq,
+                rotate_direction: item.rotate_direction,
+                speed: item.speed,
+                rotate_for_seconds: item.rotate_for_seconds
             }
         });
-        document.dispatchEvent(event);
+
+        const mainBallObj = {
+            mabot_motor_ball_index,
+            rotate_direction,
+            speed,
+            rotate_for_seconds
+        }
+
+        const mabot_ball_list = [mainBallObj, ...mutationList]; 
+
+        let maxTime = 0;
+
+        mabot_ball_list.forEach(item => {
+            if(item.rotate_for_seconds > maxTime) {
+                maxTime = item.rotate_for_seconds;
+            }
+            let event = new CustomEvent('mabot', {
+                detail: {
+                    type: 'motion_motorBall_rotate_on_speed_for_seconds',
+                    params: {
+                        mabot_motor_ball_index: item.mabot_motor_ball_index, 
+                        rotate_direction: item.rotate_direction,
+                        speed: item.speed, 
+                        rotate_for_seconds: item.rotate_for_seconds,
+                    }
+                }
+            });
+            document.dispatchEvent(event);
+        })
+
+        // 是否阻塞
+        if(!block){
+            return this.wait(maxTime);    
+        }
+
     }
 
     setMabotMotorBallSpeed1(args) {
         const mabot_motor_ball_index = Cast.toNumber(args.mabot_motor_ball_index);
         const rotate_direction = Cast.toString(args.rotate_direction);
         const speed = Cast.toNumber(args.speed);
-        const event = new CustomEvent('mabot', {
-            detail: {
-                type: 'motion_motorBall_rotate_on_speed',
-                params: {
-                    mabot_motor_ball_index, rotate_direction, speed
-                }
+        const mutation = args.mutation ? (args.mutation.children || []) : []; // 选择多个驱动球时
+
+        const mutationList = mutation.map(item => {
+            return {
+                mabot_motor_ball_index: item.seq,
+                rotate_direction: item.rotate_direction,
+                speed: item.speed
             }
         });
-        document.dispatchEvent(event);
+
+        const mainBallObj = {
+            mabot_motor_ball_index,
+            rotate_direction,
+            speed
+        }
+        const mabot_ball_list = [mainBallObj, ...mutationList]; 
+
+
+        let maxTime = 0;
+
+        mabot_ball_list.forEach(item => {
+            if(item.rotate_for_seconds > maxTime) {
+                maxTime = item.rotate_for_seconds;
+            }
+            let event = new CustomEvent('mabot', {
+                detail: {
+                    type: 'motion_motorBall_rotate_on_speed',
+                    params: {
+                        mabot_motor_ball_index: item.mabot_motor_ball_index, 
+                        rotate_direction: item.rotate_direction,
+                        speed: item.speed
+                    }
+                }
+            });
+            document.dispatchEvent(event);
+        });
 
     }
 
