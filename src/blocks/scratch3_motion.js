@@ -264,30 +264,39 @@ class Scratch3MotionBlocks {
     }
 
     mabotMotorBallStop(args) {
-        const mabot_motor_ball_index = Cast.toNumber(args.mabot_motor_ball_index);
+        // const mabot_motor_ball_index = Cast.toNumber(args.mabot_motor_ball_index);
+        const mabot_motor_ball_index = args.mabot_motor_ball_index.replace(/\s/g, ""); // 去掉空格
         const immediateOrNot = Cast.toString(args.immediatelyOrNot);
-        const event = new CustomEvent('mabot', {
-            detail: {
-                type: 'motion_motorBall_stop',
-                params: {
-                    mabot_motor_ball_index, immediateOrNot
+        (mabot_motor_ball_index.split(',') || []).map(value => {
+            const event = new CustomEvent('mabot', {
+                detail: {
+                    type: 'motion_motorBall_stop',
+                    params: {
+                        mabot_motor_ball_index: Cast.toNumber(value), 
+                        immediateOrNot
+                    }
                 }
-            }
+            });
+            document.dispatchEvent(event);
         });
-        document.dispatchEvent(event);
     }
 
     mabotMotorBallReset(args) {
-        const mabot_motor_ball_index = Cast.toNumber(args.mabot_motor_ball_index);
-        const event = new CustomEvent('mabot', {
-            detail: {
-                type: 'motion_motorBall_reset',
-                params: {
-                    mabot_motor_ball_index,
+        const indexList = args.mabot_motor_ball_index.replace(/\s/g, "");
+        // const mabot_motor_ball_index = Cast.toNumber(args.mabot_motor_ball_index);
+        (indexList.split(',') || []).forEach(value => {
+            const index = Cast.toNumber(value);
+            const event = new CustomEvent('mabot', {
+                detail: {
+                    type: 'motion_motorBall_reset',
+                    params: {
+                        mabot_motor_ball_index: index,
+                    }
                 }
-            }
+            });
+            document.dispatchEvent(event);
         });
-        document.dispatchEvent(event);
+
     }
 
 
@@ -345,30 +354,106 @@ class Scratch3MotionBlocks {
 
     setMabotHorizontalJoint(args) {
         const mabot_horizontalJoint_index = Cast.toNumber(args.mabot_horizontalJoint_index);
+        const block = args.BLOCK.indexOf(`onebyone.png`) > -1;
         const mabot_horizontalJoint_angle = Cast.toString(args.mabot_horizontalJoint_angle);
+        const mutation = args.mutation ? (args.mutation.children || []) : []; // 选择多个驱动球时
+        console.log(`args`, args)
+        /* 
         const event = new CustomEvent('mabot', {
             detail: {
                 type: 'motion_horizontalJoint_set_angle',
                 params: {
-                    mabot_horizontalJoint_index, mabot_horizontalJoint_angle
+                    mabot_horizontalJoint_index: index, 
+                    mabot_horizontalJoint_angle
                 }
             }
         });
         document.dispatchEvent(event);
+        */
+        const mutationList = mutation.map(item => {
+            return {
+                mabot_horizontalJoint_index: Cast.toNumber(item.seq),
+                mabot_horizontalJoint_angle: Cast.toString(item.mabot_horizontaljoint_angle)
+            }
+        });
+
+        const mainBallObj = {
+            mabot_horizontalJoint_index,
+            mabot_horizontalJoint_angle
+        }
+        const mabot_ball_list = [mainBallObj, ...mutationList];
+
+        mabot_ball_list.forEach(item => {
+            let event = new CustomEvent('mabot', {
+                detail: {
+                    type: 'motion_horizontalJoint_set_angle',
+                    params: {
+                        mabot_horizontalJoint_index: item.mabot_horizontalJoint_index, 
+                        mabot_horizontalJoint_angle: item.mabot_horizontalJoint_angle
+                    }
+                }
+            });
+            document.dispatchEvent(event);
+        });
+
+        // 是否阻塞
+        if(!block){
+            return this.wait(2);    
+        }
+        
     }
 
     setMabotSwingJoint(args) {
         const mabot_swingJoint_index = Cast.toNumber(args.mabot_swingJoint_index);
+        const block = args.BLOCK.indexOf(`onebyone.png`) > -1;
         const mabot_swingJoint_angle = Cast.toString(args.mabot_swingJoint_angle);
-        const event = new CustomEvent('mabot', {
+        const mutation = args.mutation ? (args.mutation.children || []) : []; // 选择多个驱动球时
+
+       /*  const event = new CustomEvent('mabot', {
             detail: {
                 type: 'motion_swingJoint_set_angle',
                 params: {
-                    mabot_swingJoint_index, mabot_swingJoint_angle
+                    mabot_swingJoint_index: index, 
+                    mabot_swingJoint_angle
                 }
             }
         });
-        document.dispatchEvent(event);
+        document.dispatchEvent(event); */
+
+        
+        const mutationList = mutation.map(item => {
+            return {
+                mabot_swingJoint_index: Cast.toNumber(item.seq),
+                mabot_swingJoint_angle: Cast.toString(item.mabot_swingjoint_angle)
+            }
+        });
+
+        const mainBallObj = {
+            mabot_swingJoint_index,
+            mabot_swingJoint_angle
+        }
+        const mabot_ball_list = [mainBallObj, ...mutationList];
+
+        mabot_ball_list.forEach(item => {
+            let event = new CustomEvent('mabot', {
+                detail: {
+                    type: 'motion_swingJoint_set_angle',
+                    params: {
+                        mabot_swingJoint_index: item.mabot_swingJoint_index, 
+                        mabot_swingJoint_angle: item.mabot_swingJoint_angle
+                    }
+                }
+            });
+            document.dispatchEvent(event);
+        });
+
+
+
+        // 是否阻塞
+        if(!block){
+            return this.wait(2);    
+        }
+        
     }
 
 
