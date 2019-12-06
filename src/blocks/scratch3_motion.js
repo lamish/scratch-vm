@@ -117,7 +117,7 @@ class Scratch3MotionBlocks {
 
 
         // 是否阻塞
-        if(!block){
+        if(block){
             return this.wait(maxTime);
         }
         //return mabotSensorStatesManager.motorBall[mabot_motor_ball_index];
@@ -214,7 +214,7 @@ class Scratch3MotionBlocks {
         })
 
         // 是否阻塞
-        if(!block){
+        if(block){
             return this.wait(maxTime);    
         }
 
@@ -355,25 +355,14 @@ class Scratch3MotionBlocks {
     setMabotHorizontalJoint(args) {
         const mabot_horizontalJoint_index = Cast.toNumber(args.mabot_horizontalJoint_index);
         const block = args.BLOCK.indexOf(`onebyone.png`) > -1;
-        const mabot_horizontalJoint_angle = Cast.toString(args.mabot_horizontalJoint_angle);
+        const mabot_horizontalJoint_angle = Cast.toString(+args.mabot_horizontalJoint_angle + 90);
         const mutation = args.mutation ? (args.mutation.children || []) : []; // 选择多个驱动球时
         console.log(`args`, args)
-        /* 
-        const event = new CustomEvent('mabot', {
-            detail: {
-                type: 'motion_horizontalJoint_set_angle',
-                params: {
-                    mabot_horizontalJoint_index: index, 
-                    mabot_horizontalJoint_angle
-                }
-            }
-        });
-        document.dispatchEvent(event);
-        */
+        
         const mutationList = mutation.map(item => {
             return {
                 mabot_horizontalJoint_index: Cast.toNumber(item.seq),
-                mabot_horizontalJoint_angle: Cast.toString(item.mabot_horizontaljoint_angle)
+                mabot_horizontalJoint_angle: Cast.toString(+item.mabot_horizontaljoint_angle+90)
             }
         });
 
@@ -397,8 +386,38 @@ class Scratch3MotionBlocks {
         });
 
         // 是否阻塞
-        if(!block){
-            return this.wait(2);    
+        if(block){
+            const promiseList = mabot_ball_list.map(item => {
+                const mabot_horizontalJoint_index = item.mabot_horizontalJoint_index;
+                const changeAngle = item.mabot_horizontalJoint_angle;
+                
+                const p = new Promise((resolve) => {
+                    let timer = null;
+                    
+                    let interval = setInterval(() => {
+                        // 获取角度
+                        this.getMabotHorizontalJoint({mabot_horizontalJoint_index}).then(angle => {
+                            if(angle >= changeAngle - 5 && angle <= changeAngle + 5) {
+                                // 在误差范围内则判定动作完成
+                                resolve();
+                                console.log(`HorizontalJoint在误差范围内则判定动作完成`)
+                                clearTimeout(timer);
+                                clearInterval(interval);
+                            }
+                        });
+                    }, 200);
+
+                    timer = setTimeout(() => {
+                        // 超时也判定动作完成
+                        console.log(`HorizontalJoint超时也判定动作完成`)
+                        resolve();
+                        clearInterval(interval);
+                    }, 3000);
+                });
+
+                return p;
+            });
+            return Promise.all(promiseList);
         }
         
     }
@@ -406,25 +425,14 @@ class Scratch3MotionBlocks {
     setMabotSwingJoint(args) {
         const mabot_swingJoint_index = Cast.toNumber(args.mabot_swingJoint_index);
         const block = args.BLOCK.indexOf(`onebyone.png`) > -1;
-        const mabot_swingJoint_angle = Cast.toString(args.mabot_swingJoint_angle);
+        const mabot_swingJoint_angle = Cast.toString(+args.mabot_swingJoint_angle + 90);
         const mutation = args.mutation ? (args.mutation.children || []) : []; // 选择多个驱动球时
-
-       /*  const event = new CustomEvent('mabot', {
-            detail: {
-                type: 'motion_swingJoint_set_angle',
-                params: {
-                    mabot_swingJoint_index: index, 
-                    mabot_swingJoint_angle
-                }
-            }
-        });
-        document.dispatchEvent(event); */
-
-        
+        console.log(`mabot_swingJoint_angle`, mabot_swingJoint_angle)
+     
         const mutationList = mutation.map(item => {
             return {
                 mabot_swingJoint_index: Cast.toNumber(item.seq),
-                mabot_swingJoint_angle: Cast.toString(item.mabot_swingjoint_angle)
+                mabot_swingJoint_angle: Cast.toString(+item.mabot_swingjoint_angle+90)
             }
         });
 
@@ -450,8 +458,38 @@ class Scratch3MotionBlocks {
 
 
         // 是否阻塞
-        if(!block){
-            return this.wait(2);    
+        if(block){
+            const promiseList = mabot_ball_list.map(item => {
+                const mabot_swingJoint_index = item.mabot_swingJoint_index;
+                const changeAngle = item.mabot_swingJoint_angle;
+                
+                const p = new Promise((resolve) => {
+                    let timer = null;
+                    
+                    let interval = setInterval(() => {
+                        // 获取角度
+                        this.getMabotSwingJoint({mabot_swingJoint_index}).then(angle => {
+                            if(angle >= changeAngle - 5 && angle <= changeAngle + 5) {
+                                // 在误差范围内则判定动作完成
+                                resolve();
+                                console.log(`SwingJoint在误差范围内则判定动作完成`)
+                                clearTimeout(timer);
+                                clearInterval(interval);
+                            }
+                        });
+                    }, 200);
+
+                    timer = setTimeout(() => {
+                        // 超时也判定动作完成
+                        console.log(`SwingJoint超时也判定动作完成`)
+                        resolve();
+                        clearInterval(interval);
+                    }, 3000);
+                });
+
+                return p;
+            });
+            return Promise.all(promiseList);
         }
         
     }
