@@ -353,15 +353,25 @@ class Scratch3SoundBlocks {
     }
 
     setMabotLights (args) {
-        const target_light = Cast.toNumber(args.CENTER);
+        const target_light = args.CENTER.replace(/\s/g, "");
         const light_color = Cast.toNumber(args.COLOR);
         const light_mode = Cast.toNumber(args.MODE);
+        
+        const temp = target_light.split('#');
+        const main_light = temp[0] ? [temp[0]] : [];
+        const motor_light = temp[1] ? temp[1].split(',') : [];
+
+        console.log(`main_light`, main_light);
+        console.log(`motor_light`, motor_light)
 
         const event = new CustomEvent('mabot', {
             detail: {
                 type: 'sound_mabot_set_all_lights_to_one_mode',
                 params: {
-                    target_light,
+                    target_light: {
+                        main_light,
+                        motor_light
+                    },
                     light_mode,
                     light_color
                 }
@@ -370,7 +380,8 @@ class Scratch3SoundBlocks {
         document.dispatchEvent(event);
 
         if(args.BLOCK != undefined && args.SECONDS != undefined){
-            const block = Cast.toBoolean(args.BLOCK); // 是否阻塞
+            const block = args.BLOCK.indexOf('onebyone.png') > -1
+            // const block = Cast.toBoolean(args.BLOCK); // 是否阻塞
             const seconds = Cast.toNumber(args.SECONDS); // 持续x秒
             //持续时间
             setTimeout(()=>{
@@ -384,14 +395,23 @@ class Scratch3SoundBlocks {
     }
 
     closedMabotLight(args){
-        const light_center = Cast.toNumber(args.CENTER); // 主控 or 驱动球
+        //const light_center = Cast.toNumber(args.CENTER); // 主控 or 驱动球
+        const light_center = args.CENTER.replace(/\s/g, "");
         const light_mode = 1; // 模式
         const light_color = 1; // 颜色
+
+        const temp = light_center.split('#');
+        const main_light = temp[0] ? [temp[0]] : [];
+        const motor_light = temp[1] ? temp[1].split(',') : [];
+
         const event = new CustomEvent('mabot', {
             detail: {
                 type: 'bell_light_closed',
                 params: {
-                    light_center,
+                    light_center: {
+                        main_light,
+                        motor_light
+                    },
                     light_mode,
                     light_color
                 }
@@ -434,7 +454,8 @@ class Scratch3SoundBlocks {
         document.dispatchEvent(event);
 
         if(args.BLOCK != undefined && args.SECONDS != undefined){
-            const block = Cast.toBoolean(args.BLOCK); // 是否阻塞
+            const block = args.BLOCK.indexOf('onebyone.png') > -1;
+            // const block = Cast.toBoolean(args.BLOCK); // 是否阻塞
             const seconds = Cast.toNumber(args.SECONDS); // 持续x秒
             //持续时间
             setTimeout(()=>{
