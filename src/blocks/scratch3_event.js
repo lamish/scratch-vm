@@ -232,20 +232,26 @@ class Scratch3EventBlocks {
         if (mabotSensorStatesManager.statusChanged) {
             mabotSensorStatesManager.statusChanged = false;
             let detectedAngle = 0;
+            /**
+             *
+             * ['俯仰角度', 'gyro_x'],
+             * ['旋转角度', 'gyro_y'],
+             * ['翻滚角度', 'gyro_z'],
+             *
+             */
             if (direction === "gyro_x")
-                detectedAngle = mabotSensorStatesManager.gyro_x[0] + mabotSensorStatesManager.gyro_x[1] * 256;
+                detectedAngle = mabotSensorStatesManager.gyro_x;
             else if (direction === "gyro_y")
-                detectedAngle = mabotSensorStatesManager.gyro_y[0] + mabotSensorStatesManager.gyro_y[1] * 256;
+                detectedAngle = mabotSensorStatesManager.gyro_y;
             else if (direction === "gyro_z")
-                detectedAngle = mabotSensorStatesManager.gyro_z[0] + mabotSensorStatesManager.gyro_z[1] * 256;
+                detectedAngle = mabotSensorStatesManager.gyro_z;
 
-            detectedAngle = detectedAngle % 360;
-            console.log("detected angle:", detectedAngle, angle);
+            console.log("detectedAngle angle:", detectedAngle, angle);
             if (detectedAngle >= angle) {
-                console.log("detectedAngle >= angle");
+                // console.log("detectedAngle >= angle");
                 return equalsOrNot === "GREATER";
             } else {
-                console.log("detectedAngle <= angle");
+                // console.log("detectedAngle <= angle");
                 return equalsOrNot === "LESS";
             }
         }
@@ -260,7 +266,7 @@ class Scratch3EventBlocks {
             detail: {
                 type: 'bell_event_infrared_cm',
                 params: {
-                    target_infrared,
+                    target_infrared
                 }
             }
         });
