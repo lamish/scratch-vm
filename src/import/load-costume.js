@@ -13,8 +13,9 @@ const loadVector_ = function (costume, runtime, rotationCenter, optVersion) {
             // Put back into storage
             const storage = runtime.storage;
             costume.asset.encodeTextData(svgString, storage.DataFormat.SVG, true);
-            costume.assetId = costume.asset.assetId;
-            costume.md5 = `${costume.assetId}.${costume.dataFormat}`;
+             // costume.assetId = costume.asset.assetId;
+            // 让md5的值与sprites.json里的保持一致
+            // costume.md5 = `${costume.assetId}.${costume.dataFormat}`;
         }
         // createSVGSkin does the right thing if rotationCenter isn't provided, so it's okay if it's
         // undefined here
