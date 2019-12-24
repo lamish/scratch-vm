@@ -388,7 +388,7 @@ class Scratch3SoundBlocks {
                 this.closedMabotLight(args);
             }, seconds * 1000);
             // 是否阻塞
-            if(!block){
+            if(block){
                 return this.wait(seconds);
             }
         }
@@ -462,7 +462,7 @@ class Scratch3SoundBlocks {
                 this.closeMabotBuzzer();
             }, seconds * 1000);
             // 是否阻塞
-            if(!block){
+            if(block){
                 return this.wait(seconds);
             }
         }
