@@ -376,6 +376,7 @@ class Scratch3SensingBlocks {
 
     DetectTouchPressState(args) {
         const mabot_touch_ball_index = Cast.toNumber(args.MOTOR);
+        const touch_press = args.TOUCHPRESS;
         const event = new CustomEvent('mabot', {
             detail: {
                 type: 'bell_detect_touch_press_state',
@@ -384,6 +385,7 @@ class Scratch3SensingBlocks {
                 }
             }
         });
+
         document.dispatchEvent(event);
 
         //console.log("mabot_sensor_index: ", mabotSensorStatesManager.touch_ball_index);
@@ -391,11 +393,20 @@ class Scratch3SensingBlocks {
             let init1 = setInterval(function () {
                 if (mabotSensorStatesManager.statusChanged) {
                     if (mabotSensorStatesManager.touch_ball_index === mabot_touch_ball_index && mabotSensorStatesManager.touch_ball_pressed === true) {
-                        console.log("pressed，", mabotSensorStatesManager.touch_ball_pressed);
-                        resolve(true);
+                        // console.log("按钮按下", mabotSensorStatesManager.touch_ball_pressed);
+                        if(touch_press === 'PRESS') {
+                            resolve(true);
+                        } else {
+                            resolve(false);
+                        }
+                        
                     } else {
-                        console.log("unpressed，", mabotSensorStatesManager.touch_ball_pressed);
-                        resolve(false);
+                        // console.log("按钮按下", mabotSensorStatesManager.touch_ball_pressed);
+                        if(touch_press === 'PRESS') {
+                            resolve(false);
+                        } else {
+                            resolve(true);
+                        }
                     }
                     mabotSensorStatesManager.statusChanged = false;
                     clearInterval(init1);
