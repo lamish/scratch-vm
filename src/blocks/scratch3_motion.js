@@ -97,6 +97,7 @@ class Scratch3MotionBlocks {
         let maxTime = 0;
 
         mabot_ball_list.forEach(item => {
+            
             if(item.rotate_for_seconds > maxTime) {
                 maxTime = item.rotate_for_seconds;
             }
@@ -114,7 +115,7 @@ class Scratch3MotionBlocks {
             document.dispatchEvent(event);
         })
 
-
+        console.log(`maxTime`, maxTime)
 
         // 是否阻塞
         if(block){
@@ -131,9 +132,9 @@ class Scratch3MotionBlocks {
 
         const mutationList = mutation.map(item => {
             return {
-                mabot_motor_ball_index: item.seq,
-                rotate_direction: item.rotate_direction,
-                power: item.power
+                mabot_motor_ball_index: Cast.toNumber(item.seq),
+                rotate_direction: Cast.toString(item.rotate_direction),
+                power: Cast.toNumber(item.power)
             }
         });
 
@@ -177,10 +178,10 @@ class Scratch3MotionBlocks {
 
         const mutationList = mutation.map(item => {
             return {
-                mabot_motor_ball_index: item.seq,
-                rotate_direction: item.rotate_direction,
-                speed: item.speed,
-                rotate_for_seconds: item.rotate_for_seconds
+                mabot_motor_ball_index: Cast.toNumber(item.seq),
+                rotate_direction: Cast.toString(item.rotate_direction),
+                speed: Cast.toNumber(item.speed),
+                rotate_for_seconds: Cast.toNumber(item.rotate_for_seconds)
             }
         });
 
@@ -196,6 +197,7 @@ class Scratch3MotionBlocks {
         let maxTime = 0;
 
         mabot_ball_list.forEach(item => {
+            console.log(item.rotate_for_seconds, maxTime, item.rotate_for_seconds > maxTime)
             if(item.rotate_for_seconds > maxTime) {
                 maxTime = item.rotate_for_seconds;
             }
@@ -213,6 +215,8 @@ class Scratch3MotionBlocks {
             document.dispatchEvent(event);
         })
 
+        console.log(`maxTime`, maxTime)
+
         // 是否阻塞
         if(block){
             return this.wait(maxTime);    
@@ -228,9 +232,9 @@ class Scratch3MotionBlocks {
 
         const mutationList = mutation.map(item => {
             return {
-                mabot_motor_ball_index: item.seq,
-                rotate_direction: item.rotate_direction,
-                speed: item.speed
+                mabot_motor_ball_index: Cast.toNumber(item.seq),
+                rotate_direction: Cast.toString(item.rotate_direction),
+                speed: Cast.toNumber(item.speed)
             }
         });
 
