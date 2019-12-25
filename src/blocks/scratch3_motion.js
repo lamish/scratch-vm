@@ -66,18 +66,27 @@ class Scratch3MotionBlocks {
     }
 
     setMabotMotorBallPower(args) {
+      
         const mabot_motor_ball_index = Cast.toNumber(args.mabot_motor_ball_index);
         const rotate_direction = Cast.toString(args.rotate_direction);
-        const power = Cast.toNumber(args.power);
+        const uiPower = Cast.toNumber(args.power);
         const rotate_for_seconds = Cast.toNumber(args.rotate_for_seconds);
         const block = args.BLOCK.indexOf('onebyone.png') > -1 ? true : false; // 是否同步执行
         const mutation = args.mutation ? (args.mutation.children || []) : []; // 选择多个驱动球时
+
+        // 功率0-100 要转换成35-100， 因为功率太小驱动球不转
+        const mapPower = (power) => {
+            power = Cast.toNumber(power);
+            return Math.floor(power * 0.65) + 35; 
+        }
+
+        const power = mapPower(uiPower);
 
         const mutationList = mutation.map(item => {
             return {
                 mabot_motor_ball_index: Cast.toNumber(item.seq),
                 rotate_direction: Cast.toString(item.rotate_direction),
-                power: Cast.toNumber(item.power),
+                power: mapPower(item.power),
                 rotate_for_seconds: Cast.toNumber(item.rotate_for_seconds)
             }
         });
@@ -90,8 +99,8 @@ class Scratch3MotionBlocks {
         }
         const mabot_ball_list = [mainBallObj, ...mutationList];
 
-        console.log(`args`, args)
-        console.log(`BLOCK`, block)
+        // console.log(`args`, args)
+        // console.log(`BLOCK`, block)
         console.log(`mabot_ball_list`, mabot_ball_list);
 
         let maxTime = 0;
@@ -127,14 +136,22 @@ class Scratch3MotionBlocks {
     setMabotMotorBallPower1(args) {
         const mabot_motor_ball_index = Cast.toNumber(args.mabot_motor_ball_index);
         const rotate_direction = Cast.toString(args.rotate_direction);
-        const power = Cast.toNumber(args.power);
+        const uiPower = Cast.toNumber(args.power);
         const mutation = args.mutation ? (args.mutation.children || []) : []; // 选择多个驱动球时
+
+        // 功率0-100 要转换成35-100， 因为功率太小驱动球不转
+        const mapPower = (power) => {
+            power = Cast.toNumber(power);
+            return Math.floor(power * 0.65) + 35; 
+        }
+
+        const power = mapPower(uiPower);
 
         const mutationList = mutation.map(item => {
             return {
                 mabot_motor_ball_index: Cast.toNumber(item.seq),
                 rotate_direction: Cast.toString(item.rotate_direction),
-                power: Cast.toNumber(item.power)
+                power: mapPower(item.power)
             }
         });
 
