@@ -66,7 +66,7 @@ class Scratch3MotionBlocks {
     }
 
     setMabotMotorBallPower(args) {
-      
+
         const mabot_motor_ball_index = Cast.toNumber(args.mabot_motor_ball_index);
         const rotate_direction = Cast.toString(args.rotate_direction);
         const uiPower = Cast.toNumber(args.power);
@@ -77,7 +77,7 @@ class Scratch3MotionBlocks {
         // 功率0-100 要转换成35-100， 因为功率太小驱动球不转
         const mapPower = (power) => {
             power = Cast.toNumber(power);
-            return Math.floor(power * 0.65) + 35; 
+            return Math.floor(power * 0.65) + 35;
         }
 
         const power = mapPower(uiPower);
@@ -106,7 +106,7 @@ class Scratch3MotionBlocks {
         let maxTime = 0;
 
         mabot_ball_list.forEach(item => {
-            
+
             if(item.rotate_for_seconds > maxTime) {
                 maxTime = item.rotate_for_seconds;
             }
@@ -209,7 +209,7 @@ class Scratch3MotionBlocks {
             rotate_for_seconds
         }
 
-        const mabot_ball_list = [mainBallObj, ...mutationList]; 
+        const mabot_ball_list = [mainBallObj, ...mutationList];
 
         let maxTime = 0;
 
@@ -222,9 +222,9 @@ class Scratch3MotionBlocks {
                 detail: {
                     type: 'motion_motorBall_rotate_on_speed_for_seconds',
                     params: {
-                        mabot_motor_ball_index: item.mabot_motor_ball_index, 
+                        mabot_motor_ball_index: item.mabot_motor_ball_index,
                         rotate_direction: item.rotate_direction,
-                        speed: item.speed, 
+                        speed: item.speed,
                         rotate_for_seconds: item.rotate_for_seconds,
                     }
                 }
@@ -236,7 +236,7 @@ class Scratch3MotionBlocks {
 
         // 是否阻塞
         if(block){
-            return this.wait(maxTime);    
+            return this.wait(maxTime);
         }
 
     }
@@ -260,7 +260,7 @@ class Scratch3MotionBlocks {
             rotate_direction,
             speed
         }
-        const mabot_ball_list = [mainBallObj, ...mutationList]; 
+        const mabot_ball_list = [mainBallObj, ...mutationList];
 
 
         let maxTime = 0;
@@ -273,7 +273,7 @@ class Scratch3MotionBlocks {
                 detail: {
                     type: 'motion_motorBall_rotate_on_speed',
                     params: {
-                        mabot_motor_ball_index: item.mabot_motor_ball_index, 
+                        mabot_motor_ball_index: item.mabot_motor_ball_index,
                         rotate_direction: item.rotate_direction,
                         speed: item.speed
                     }
@@ -293,7 +293,7 @@ class Scratch3MotionBlocks {
                 detail: {
                     type: 'motion_motorBall_stop',
                     params: {
-                        mabot_motor_ball_index: Cast.toNumber(value), 
+                        mabot_motor_ball_index: Cast.toNumber(value),
                         immediateOrNot
                     }
                 }
@@ -337,8 +337,11 @@ class Scratch3MotionBlocks {
             let init = setInterval(function () {
                 if (mabotSensorStatesManager.statusChanged) {
                     if (mabotSensorStatesManager.motorBallIndex === mabot_motor_ball_index){
-                        resolve(mabotSensorStatesManager.motorBallPos[3] * Math.pow(256, 3) + mabotSensorStatesManager.motorBallPos[2] * Math.pow(256, 2) +
-                            mabotSensorStatesManager.motorBallPos[1] * 256 + mabotSensorStatesManager.motorBallPos[0]);
+                        // resolve(mabotSensorStatesManager.motorBallPos[3] * Math.pow(256, 3) + mabotSensorStatesManager.motorBallPos[2] * Math.pow(256, 2) +
+                        //     mabotSensorStatesManager.motorBallPos[1] * 256 + mabotSensorStatesManager.motorBallPos[0]);
+                        let result = (mabotSensorStatesManager.motorBallPos / 1600 * 360).toFixed(2);
+                        console.log(mabotSensorStatesManager.motorBallPos ," parse to ", result);
+                        resolve(result);
                         //验证resolve 是否会影响后面程序的执行。
                         mabotSensorStatesManager.statusChanged = false;
                         clearInterval(init);
@@ -379,7 +382,7 @@ class Scratch3MotionBlocks {
         const mabot_horizontalJoint_angle = Cast.toString(+args.mabot_horizontalJoint_angle + 90);
         const mutation = args.mutation ? (args.mutation.children || []) : []; // 选择多个驱动球时
         console.log(`args`, args)
-        
+
         const mutationList = mutation.map(item => {
             return {
                 mabot_horizontalJoint_index: Cast.toNumber(item.seq),
@@ -398,7 +401,7 @@ class Scratch3MotionBlocks {
                 detail: {
                     type: 'motion_horizontalJoint_set_angle',
                     params: {
-                        mabot_horizontalJoint_index: item.mabot_horizontalJoint_index, 
+                        mabot_horizontalJoint_index: item.mabot_horizontalJoint_index,
                         mabot_horizontalJoint_angle: item.mabot_horizontalJoint_angle
                     }
                 }
@@ -411,10 +414,10 @@ class Scratch3MotionBlocks {
             const promiseList = mabot_ball_list.map(item => {
                 const mabot_horizontalJoint_index = item.mabot_horizontalJoint_index;
                 const changeAngle = item.mabot_horizontalJoint_angle;
-                
+
                 const p = new Promise((resolve) => {
                     let timer = null;
-                    
+
                     let interval = setInterval(() => {
                         // 获取角度
                         this.getMabotHorizontalJoint({mabot_horizontalJoint_index}).then(angle => {
@@ -440,7 +443,7 @@ class Scratch3MotionBlocks {
             });
             return Promise.all(promiseList);
         }
-        
+
     }
 
     setMabotSwingJoint(args) {
@@ -449,7 +452,7 @@ class Scratch3MotionBlocks {
         const mabot_swingJoint_angle = Cast.toString(+args.mabot_swingJoint_angle + 90);
         const mutation = args.mutation ? (args.mutation.children || []) : []; // 选择多个驱动球时
         console.log(`mabot_swingJoint_angle`, mabot_swingJoint_angle)
-     
+
         const mutationList = mutation.map(item => {
             return {
                 mabot_swingJoint_index: Cast.toNumber(item.seq),
@@ -468,7 +471,7 @@ class Scratch3MotionBlocks {
                 detail: {
                     type: 'motion_swingJoint_set_angle',
                     params: {
-                        mabot_swingJoint_index: item.mabot_swingJoint_index, 
+                        mabot_swingJoint_index: item.mabot_swingJoint_index,
                         mabot_swingJoint_angle: item.mabot_swingJoint_angle
                     }
                 }
@@ -483,10 +486,10 @@ class Scratch3MotionBlocks {
             const promiseList = mabot_ball_list.map(item => {
                 const mabot_swingJoint_index = item.mabot_swingJoint_index;
                 const changeAngle = item.mabot_swingJoint_angle;
-                
+
                 const p = new Promise((resolve) => {
                     let timer = null;
-                    
+
                     let interval = setInterval(() => {
                         // 获取角度
                         this.getMabotSwingJoint({mabot_swingJoint_index}).then(angle => {
@@ -512,7 +515,7 @@ class Scratch3MotionBlocks {
             });
             return Promise.all(promiseList);
         }
-        
+
     }
 
 
