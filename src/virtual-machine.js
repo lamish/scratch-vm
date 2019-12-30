@@ -1345,10 +1345,9 @@ class VirtualMachine extends EventEmitter {
     emitWorkspaceUpdate () {
         // Create a list of broadcast message Ids according to the stage variables
         const stageTarget = this.runtime.getTargetForStage();
-        if(!stageTarget) {
-            return;
-        }
-        const stageVariables = stageTarget.variables;
+
+        const stageVariables = stageTarget ? stageTarget.variables : {};
+        
         let messageIds = [];
         for (const varId in stageVariables) {
             if (stageVariables[varId].type === Variable.BROADCAST_MESSAGE_TYPE) {
@@ -1374,9 +1373,9 @@ class VirtualMachine extends EventEmitter {
         // Anything left in messageIds is not referenced by a block, so delete it.
         for (let i = 0; i < messageIds.length; i++) {
             const id = messageIds[i];
-            delete this.runtime.getTargetForStage().variables[id];
+            delete stageVariables[id];
         }
-        const globalVarMap = Object.assign({}, this.runtime.getTargetForStage().variables);
+        const globalVarMap = Object.assign({}, stageVariables);
         const localVarMap = this.editingTarget.isStage ?
             Object.create(null) :
             Object.assign({}, this.editingTarget.variables);
