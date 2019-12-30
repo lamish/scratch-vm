@@ -324,6 +324,7 @@ class VirtualMachine extends EventEmitter {
             // input should be parsed/validated as an entire project (and not a single sprite)
             validate(input, false, (error, res) => {
                 if (error) return reject(error);
+                // console.log(`result`, res)
                 resolve(res);
             });
         })
@@ -1343,7 +1344,8 @@ class VirtualMachine extends EventEmitter {
      */
     emitWorkspaceUpdate () {
         // Create a list of broadcast message Ids according to the stage variables
-        const stageVariables = this.runtime.getTargetForStage().variables;
+        const stageTarget = this.runtime.getTargetForStage();
+        const stageVariables = stageTarget ? stageTarget.variables : [];
         let messageIds = [];
         for (const varId in stageVariables) {
             if (stageVariables[varId].type === Variable.BROADCAST_MESSAGE_TYPE) {
