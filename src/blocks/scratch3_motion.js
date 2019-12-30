@@ -101,7 +101,7 @@ class Scratch3MotionBlocks {
 
         // console.log(`args`, args)
         // console.log(`BLOCK`, block)
-        console.log(`mabot_ball_list`, mabot_ball_list);
+        // console.log(`mabot_ball_list`, mabot_ball_list);
 
         let maxTime = 0;
 
@@ -214,7 +214,7 @@ class Scratch3MotionBlocks {
         let maxTime = 0;
 
         mabot_ball_list.forEach(item => {
-            console.log(item.rotate_for_seconds, maxTime, item.rotate_for_seconds > maxTime)
+            // console.log(item.rotate_for_seconds, maxTime, item.rotate_for_seconds > maxTime)
             if(item.rotate_for_seconds > maxTime) {
                 maxTime = item.rotate_for_seconds;
             }
@@ -264,7 +264,7 @@ class Scratch3MotionBlocks {
 
 
         let maxTime = 0;
-
+        // console.log(`mabot_ball_list`, mabot_ball_list)
         mabot_ball_list.forEach(item => {
             if(item.rotate_for_seconds > maxTime) {
                 maxTime = item.rotate_for_seconds;
@@ -533,8 +533,8 @@ class Scratch3MotionBlocks {
         return new Promise(function (resolve) {
             let init = setInterval(function () {
                 if (mabotSensorStatesManager.statusChanged) {
-                    resolve(mabotSensorStatesManager.horizontalJointAngle);
-                    //console.log("horizontal angle:", mabotSensorStatesManager.horizontalJointAngle)
+                    const angle = mabotSensorStatesManager.horizontalJointAngle - 90;
+                    resolve(angle);
                     mabotSensorStatesManager.statusChanged = false;
                     clearInterval(init);
                 }
@@ -557,8 +557,8 @@ class Scratch3MotionBlocks {
         return new Promise(function (resolve) {
             let init = setInterval(function () {
                 if (mabotSensorStatesManager.statusChanged) {
-                    resolve(mabotSensorStatesManager.swingJointAngle);
-                    //console.log("swing angle:", mabotSensorStatesManager.swingJointAngle)
+                    const angle = mabotSensorStatesManager.swingJointAngle - 90;
+                    resolve(angle);
                     mabotSensorStatesManager.statusChanged = false;
                     clearInterval(init);
                 }
