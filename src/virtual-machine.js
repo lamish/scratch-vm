@@ -1345,7 +1345,10 @@ class VirtualMachine extends EventEmitter {
     emitWorkspaceUpdate () {
         // Create a list of broadcast message Ids according to the stage variables
         const stageTarget = this.runtime.getTargetForStage();
-        const stageVariables = stageTarget ? stageTarget.variables : [];
+        if(!stageTarget) {
+            return;
+        }
+        const stageVariables = stageTarget.variables;
         let messageIds = [];
         for (const varId in stageVariables) {
             if (stageVariables[varId].type === Variable.BROADCAST_MESSAGE_TYPE) {
