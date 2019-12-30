@@ -399,7 +399,7 @@ class Scratch3SensingBlocks {
                         } else {
                             resolve(false);
                         }
-                        
+
                     } else {
                         // console.log("按钮按下", mabotSensorStatesManager.touch_ball_pressed);
                         if(touch_press === 'PRESS') {
@@ -538,11 +538,13 @@ class Scratch3SensingBlocks {
 
     DetectGetColorValue(args) {
         const mabot_color_sensor_index = Cast.toNumber(args.MOTOR);
+        const colorMode = Cast.toNumber(args.colorMode);
         const event = new CustomEvent('mabot', {
             detail: {
                 type: 'bell_detect_color_equal_value',
                 params: {
                     mabot_color_sensor_index,
+                    colorMode,
                 }
             }
         });
@@ -633,6 +635,7 @@ class Scratch3SensingBlocks {
         document.dispatchEvent(event);
     }
 
+    //已删除
     DetectSetColorMode(args){
         const colorSensorIndex = Cast.toNumber(args.indexOfColorSensor);
         const colorMode = Cast.toNumber(args.colorMode);
@@ -646,7 +649,7 @@ class Scratch3SensingBlocks {
         });
         document.dispatchEvent(event);
     }
-  
+
 
 }
 
