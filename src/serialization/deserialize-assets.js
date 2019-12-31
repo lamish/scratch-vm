@@ -79,12 +79,11 @@ const deserializeCostume = function (costume, runtime, zip, assetFileName, textL
     const assetId = costume.assetId;
     const fileName = assetFileName ? assetFileName :
         `${assetId}.${costume.dataFormat}`;
-
     if (!storage) {
         log.error('No storage module present; cannot load costume asset: ', fileName);
         return Promise.resolve(null);
     }
-
+    // console.log(`fileName`, fileName)
     if (costume.asset) {
         // When uploading a sprite from an image file, the asset data will be provided
         // @todo Cache the asset data somewhere and pull it out here
@@ -95,9 +94,10 @@ const deserializeCostume = function (costume, runtime, zip, assetFileName, textL
             null,
             true
         )).then(asset => {
-            costume.asset = asset;
-            costume.assetId = asset.assetId;
-            costume.md5 = `${asset.assetId}.${asset.dataFormat}`;
+            // console.log(`deserializeCostume asset`, asset)
+            // costume.asset = asset;
+            // costume.assetId = asset.assetId;
+            // costume.md5 = `${asset.assetId}.${asset.dataFormat}`;
         });
     }
 
@@ -112,7 +112,7 @@ const deserializeCostume = function (costume, runtime, zip, assetFileName, textL
         const fileMatch = new RegExp(`^([^/]*/)?${fileName}$`);
         costumeFile = zip.file(fileMatch)[0]; // use the first matched file
     }
-
+    // console.log(`costumeFile`, costumeFile)
     if (!costumeFile) {
         log.error(`Could not find costume file associated with the ${costume.name} costume.`);
         return Promise.resolve(null);
@@ -165,9 +165,9 @@ const deserializeCostume = function (costume, runtime, zip, assetFileName, textL
                 true
             ))
             .then(asset => {
-                costume.asset = asset;
-                costume.assetId = asset.assetId;
-                costume.md5 = `${asset.assetId}.${asset.dataFormat}`;
+                // costume.asset = asset;
+                // costume.assetId = asset.assetId;
+                // costume.md5 = `${asset.assetId}.${asset.dataFormat}`;
             })
     ]);
 };

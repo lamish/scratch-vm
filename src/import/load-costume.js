@@ -2,6 +2,7 @@ const StringUtil = require('../util/string-util');
 const log = require('../util/log');
 
 const loadVector_ = function (costume, runtime, rotationCenter, optVersion) {
+    // console.log(`loadVector_ =======================`, JSON.parse(JSON.stringify(costume)))
     return new Promise(resolve => {
         let svgString = costume.asset.decodeText();
         // SVG Renderer load fixes "quirks" associated with Scratch 2 projects
@@ -12,10 +13,11 @@ const loadVector_ = function (costume, runtime, rotationCenter, optVersion) {
             svgString = runtime.v2SvgAdapter.toString();
             // Put back into storage
             const storage = runtime.storage;
-            costume.asset.encodeTextData(svgString, storage.DataFormat.SVG, true);
-             // costume.assetId = costume.asset.assetId;
+            // costume.asset.encodeTextData(svgString, storage.DataFormat.SVG, true);
+            costume.assetId = costume.asset.assetId;
             // 让md5的值与sprites.json里的保持一致
-            // costume.md5 = `${costume.assetId}.${costume.dataFormat}`;
+            costume.md5 = `${costume.assetId}.${costume.dataFormat}`;
+            // console.log(`loadVector_ =======================after`, JSON.parse(JSON.stringify(costume)))
         }
         // createSVGSkin does the right thing if rotationCenter isn't provided, so it's okay if it's
         // undefined here
@@ -181,6 +183,7 @@ const fetchBitmapCanvas_ = function (costume, runtime, rotationCenter) {
 };
 
 const loadBitmap_ = function (costume, runtime, _rotationCenter) {
+    // console.log(`loadBitmap_ =======================`)
     return fetchBitmapCanvas_(costume, runtime, _rotationCenter)
         .then(fetched => {
             const updateCostumeAsset = function (dataURI) {
@@ -246,6 +249,7 @@ const loadBitmap_ = function (costume, runtime, _rotationCenter) {
  * @returns {?Promise} - a promise which will resolve after skinId is set, or null on error.
  */
 const loadCostumeFromAsset = function (costume, runtime, optVersion) {
+    // console.log(`loadCostumeFromAsset ===============`, JSON.parse(JSON.stringify(costume)))
     costume.assetId = costume.asset.assetId;
     const renderer = runtime.renderer;
     if (!renderer) {
@@ -288,6 +292,7 @@ const loadCostumeFromAsset = function (costume, runtime, optVersion) {
  * @returns {?Promise} - a promise which will resolve after skinId is set, or null on error.
  */
 const loadCostume = function (md5ext, costume, runtime, optVersion) {
+    // console.log(`loadCostume==============`, JSON.parse(JSON.stringify(costume)))
     const idParts = StringUtil.splitFirst(md5ext, '.');
     const md5 = idParts[0];
     const ext = idParts[1].toLowerCase();
