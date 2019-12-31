@@ -519,7 +519,8 @@ class VirtualMachine extends EventEmitter {
         extensions.extensionIDs.forEach(extensionID => {
             if (!this.extensionManager.isExtensionLoaded(extensionID)) {
                 const extensionURL = extensions.extensionURLs.get(extensionID) || extensionID;
-                extensionPromises.push(this.extensionManager.loadExtensionURL(extensionURL));
+                if(extensionURL !== "bell")
+                    extensionPromises.push(this.extensionManager.loadExtensionURL(extensionURL));
             }
         });
 
@@ -1347,7 +1348,7 @@ class VirtualMachine extends EventEmitter {
         const stageTarget = this.runtime.getTargetForStage();
 
         const stageVariables = stageTarget ? stageTarget.variables : {};
-        
+
         let messageIds = [];
         for (const varId in stageVariables) {
             if (stageVariables[varId].type === Variable.BROADCAST_MESSAGE_TYPE) {

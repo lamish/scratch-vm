@@ -553,7 +553,7 @@ const parseScratchObject = function (object, runtime, extensions, topLevel, zip,
         sprite.name = object.objName;
     }
     // Costumes from JSON.
-    const costumePromises = assets.costumePromises;
+    const costumePromises = assets ? (assets.costumePromises || {}) : {};
     // Sounds from JSON
     const {soundBank, soundPromises} = assets;
 
@@ -864,9 +864,10 @@ const sb2import = function (json, runtime, optForceSprite, zip) {
         // Force this promise to wait for the next loop in the js tick. Let
         // storage have some time to send off asset requests.
         .then(assets => Promise.resolve(assets))
-        .then(assets => (
-            parseScratchObject(json, runtime, extensions, !optForceSprite, zip, assets)
-        ))
+        .then(assets => {
+            console.log("parseScratchObject 1")
+            return  parseScratchObject(json, runtime, extensions, !optForceSprite, zip, assets)
+        })
         .then(reorderParsedTargets)
         .then(targets => ({
             targets,
