@@ -356,13 +356,12 @@ class Scratch3SoundBlocks {
         const target_light = args.CENTER.replace(/\s/g, "");
         const light_color = Cast.toNumber(args.COLOR);
         const light_mode = Cast.toNumber(args.MODE);
-        
+        const time_seconds = args.SECONDS === undefined ? 0 : Cast.toNumber(args.SECONDS);
+        const block_or_not = args.BLOCK === undefined ? false : args.BLOCK.indexOf('onebyone.png') > -1;
+
         const temp = target_light.split('#');
         const main_light = temp[0] ? [temp[0]] : [];
         const motor_light = temp[1] ? temp[1].split(',') : [];
-
-        console.log(`main_light`, main_light);
-        console.log(`motor_light`, motor_light)
 
         const event = new CustomEvent('mabot', {
             detail: {
@@ -373,25 +372,16 @@ class Scratch3SoundBlocks {
                         motor_light
                     },
                     light_mode,
-                    light_color
+                    light_color,
+                    time_seconds,
+                    block_or_not,
                 }
             }
         });
         document.dispatchEvent(event);
 
-        if(args.BLOCK != undefined && args.SECONDS != undefined){
-            const block = args.BLOCK.indexOf('onebyone.png') > -1
-            // const block = Cast.toBoolean(args.BLOCK); // 是否阻塞
-            const seconds = Cast.toNumber(args.SECONDS); // 持续x秒
-            //持续时间
-            setTimeout(()=>{
-                this.closedMabotLight(args);
-            }, seconds * 1000);
-            // 是否阻塞
-            if(block){
-                return this.wait(seconds);
-            }
-        }
+        if (block_or_not)
+            return this.wait(time_seconds);
     }
 
     closedMabotLight(args){
@@ -440,6 +430,8 @@ class Scratch3SoundBlocks {
     playBuzzer(args){
         const buzzer_tone = Cast.toNumber(args.TONE); // 音调
         const buzzer_volume = Cast.toNumber(args.VOLUME); // 音阶
+        const time_seconds = args.SECONDS === undefined ? undefined : Cast.toNumber(args.SECONDS);
+        const block_or_not = args.BLOCK === undefined ? undefined : args.BLOCK.indexOf('onebyone.png') > -1;
 
         let volume = this.setBeepNum(buzzer_tone, buzzer_volume);
 
@@ -447,25 +439,15 @@ class Scratch3SoundBlocks {
             detail: {
                 type: 'bell_light_play_buzzer',
                 params: {
-                    volume
+                    volume,
+                    time_seconds,
+                    block_or_not,
                 }
             }
         });
         document.dispatchEvent(event);
-
-        if(args.BLOCK != undefined && args.SECONDS != undefined){
-            const block = args.BLOCK.indexOf('onebyone.png') > -1;
-            // const block = Cast.toBoolean(args.BLOCK); // 是否阻塞
-            const seconds = Cast.toNumber(args.SECONDS); // 持续x秒
-            //持续时间
-            setTimeout(()=>{
-                this.closeMabotBuzzer();
-            }, seconds * 1000);
-            // 是否阻塞
-            if(block){
-                return this.wait(seconds);
-            }
-        }
+        if(block_or_not)
+            return this.wait(time_seconds);
     }
 
     closeMabotBuzzer(){
