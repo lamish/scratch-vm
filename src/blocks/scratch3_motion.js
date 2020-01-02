@@ -413,7 +413,7 @@ class Scratch3MotionBlocks {
         if(block){
             const promiseList = mabot_ball_list.map(item => {
                 const mabot_horizontalJoint_index = item.mabot_horizontalJoint_index;
-                const changeAngle = item.mabot_horizontalJoint_angle;
+                const changeAngle = item.mabot_horizontalJoint_angle - 90; // 角度转换
 
                 const p = new Promise((resolve) => {
                     let timer = null;
@@ -421,12 +421,13 @@ class Scratch3MotionBlocks {
                     let interval = setInterval(() => {
                         // 获取角度
                         this.getMabotHorizontalJoint({mabot_horizontalJoint_index}).then(angle => {
+                            // console.log(`changeAngle`,changeAngle, `angle`, angle)
                             if(angle >= changeAngle - 5 && angle <= changeAngle + 5) {
                                 // 在误差范围内则判定动作完成
-                                resolve();
                                 console.log(`HorizontalJoint在误差范围内则判定动作完成`)
-                                clearTimeout(timer);
                                 clearInterval(interval);
+                                clearTimeout(timer);
+                                resolve();
                             }
                         });
                     }, 200);
@@ -434,8 +435,8 @@ class Scratch3MotionBlocks {
                     timer = setTimeout(() => {
                         // 超时也判定动作完成
                         console.log(`HorizontalJoint超时也判定动作完成`)
-                        resolve();
                         clearInterval(interval);
+                        resolve();
                     }, 3000);
                 });
 
@@ -479,13 +480,11 @@ class Scratch3MotionBlocks {
             document.dispatchEvent(event);
         });
 
-
-
         // 是否阻塞
         if(block){
             const promiseList = mabot_ball_list.map(item => {
                 const mabot_swingJoint_index = item.mabot_swingJoint_index;
-                const changeAngle = item.mabot_swingJoint_angle;
+                const changeAngle = item.mabot_swingJoint_angle - 90;
 
                 const p = new Promise((resolve) => {
                     let timer = null;
@@ -495,10 +494,10 @@ class Scratch3MotionBlocks {
                         this.getMabotSwingJoint({mabot_swingJoint_index}).then(angle => {
                             if(angle >= changeAngle - 5 && angle <= changeAngle + 5) {
                                 // 在误差范围内则判定动作完成
-                                resolve();
                                 console.log(`SwingJoint在误差范围内则判定动作完成`)
-                                clearTimeout(timer);
                                 clearInterval(interval);
+                                clearTimeout(timer);
+                                resolve();
                             }
                         });
                     }, 200);
@@ -506,8 +505,8 @@ class Scratch3MotionBlocks {
                     timer = setTimeout(() => {
                         // 超时也判定动作完成
                         console.log(`SwingJoint超时也判定动作完成`)
-                        resolve();
                         clearInterval(interval);
+                        resolve();
                     }, 3000);
                 });
 
