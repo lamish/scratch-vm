@@ -541,7 +541,7 @@ class Scratch3SensingBlocks {
         const colorMode = Cast.toNumber(args.colorMode);
         const event = new CustomEvent('mabot', {
             detail: {
-                type: 'bell_detect_color_equal_value',
+                type: 'bell_detect_get_color_value',
                 params: {
                     mabot_color_sensor_index,
                     colorMode,
