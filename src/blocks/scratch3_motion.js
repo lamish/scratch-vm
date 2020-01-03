@@ -242,6 +242,17 @@ class Scratch3MotionBlocks {
     }
 
     setMabotMotorBallSpeed1(args) {
+
+        // 节流， 200ms内只能触发一次
+        if(this.setMabotMotorBallSpeed1.interval) {
+            return;
+        } 
+        this.setMabotMotorBallSpeed1.interval = true;
+
+        setTimeout(() => {
+            this.setMabotMotorBallSpeed1.interval = false;
+        }, 200);
+
         const mabot_motor_ball_index = Cast.toNumber(args.mabot_motor_ball_index);
         const rotate_direction = Cast.toString(args.rotate_direction);
         const speed = Cast.toNumber(args.speed);

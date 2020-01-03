@@ -387,13 +387,14 @@ class Scratch3SensingBlocks {
         });
 
         document.dispatchEvent(event);
-
+        // console.log(`touch_press`, touch_press)
         //console.log("mabot_sensor_index: ", mabotSensorStatesManager.touch_ball_index);
         return new Promise(function (resolve) {
             let init1 = setInterval(function () {
+                let timeout = null;
                 if (mabotSensorStatesManager.statusChanged) {
                     if (mabotSensorStatesManager.touch_ball_index === mabot_touch_ball_index && mabotSensorStatesManager.touch_ball_pressed === true) {
-                        // console.log("按钮按下", mabotSensorStatesManager.touch_ball_pressed);
+                        // console.log("按钮按下");
                         if(touch_press === 'PRESS') {
                             resolve(true);
                         } else {
@@ -401,7 +402,7 @@ class Scratch3SensingBlocks {
                         }
 
                     } else {
-                        // console.log("按钮按下", mabotSensorStatesManager.touch_ball_pressed);
+                        // console.log("按钮没按下");
                         if(touch_press === 'PRESS') {
                             resolve(false);
                         } else {
@@ -409,7 +410,13 @@ class Scratch3SensingBlocks {
                         }
                     }
                     mabotSensorStatesManager.statusChanged = false;
+                    clearTimeout(timeout);
                     clearInterval(init1);
+                }else{
+                    timeout = setTimeout(() => {
+                        clearInterval(init1);
+                        resolve(false);
+                    }, 3000)
                 }
             }, 10);
         });
