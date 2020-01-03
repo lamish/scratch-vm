@@ -45,6 +45,8 @@ class Scratch3SensingBlocks {
         this.runtime.on('PROJECT_START', this._resetAnswer.bind(this));
         this.runtime.on('PROJECT_STOP_ALL', this._clearAllQuestions.bind(this));
         this.runtime.on('STOP_FOR_TARGET', this._clearTargetQuestions.bind(this));
+
+        this.checkInterval = 10;
     }
 
     /**
@@ -389,8 +391,8 @@ class Scratch3SensingBlocks {
         document.dispatchEvent(event);
 
         //console.log("mabot_sensor_index: ", mabotSensorStatesManager.touch_ball_index);
-        return new Promise(function (resolve) {
-            let init1 = setInterval(function () {
+        return new Promise((resolve) => {
+            let init1 = setInterval(() => {
                 if (mabotSensorStatesManager.statusChanged) {
                     if (mabotSensorStatesManager.touch_ball_index === mabot_touch_ball_index && mabotSensorStatesManager.touch_ball_pressed === true) {
                         // console.log("按钮按下", mabotSensorStatesManager.touch_ball_pressed);
@@ -411,7 +413,7 @@ class Scratch3SensingBlocks {
                     mabotSensorStatesManager.statusChanged = false;
                     clearInterval(init1);
                 }
-            }, 10);
+            }, this.checkInterval);
         });
     }
 
@@ -429,8 +431,8 @@ class Scratch3SensingBlocks {
         });
         document.dispatchEvent(event);
         //console.log("args: " + args.MOTOR + " " + args.TOUCHPRESS + " " + args.COLOR);
-        return new Promise(function (resolve) {
-            let init1 = setInterval(function () {
+        return new Promise((resolve) => {
+            let init1 = setInterval(() => {
                 if (mabotSensorStatesManager.statusChanged) {
                     if (mabotSensorStatesManager.colorSensorIndex === mabot_color_sensor_index && mabotSensorStatesManager.colorData[0] === color) {
                         console.log("color equals，");
@@ -451,7 +453,7 @@ class Scratch3SensingBlocks {
                     // console.log("mabot_color_sensor_index: " + mabotSensorStatesManager.colorSensorIndex);
                     // console.log("color: " + mabotSensorStatesManager.colorData);
                 }
-            }, 20);
+            }, this.checkInterval);
         });
     }
 
@@ -469,8 +471,8 @@ class Scratch3SensingBlocks {
         });
         document.dispatchEvent(event);
         //console.log("args: " + args.MOTOR+ " " + args.TOUCHPRESS + " " + args.COLOR);
-        return new Promise(function (resolve) {
-            let init1 = setInterval(function () {
+        return new Promise((resolve) => {
+            let init1 = setInterval(() => {
                 if (mabotSensorStatesManager.statusChanged) {
                     if (mabotSensorStatesManager.IRSensorIndex === mabot_IR_sensor_index && mabotSensorStatesManager.distance >= distance) {
                         console.log("distance greater than " + distance);
@@ -488,7 +490,7 @@ class Scratch3SensingBlocks {
                     mabotSensorStatesManager.statusChanged = false;
                     clearInterval(init1);
                 }
-            }, 20);
+            }, this.checkInterval);
         });
     }
 
@@ -504,8 +506,8 @@ class Scratch3SensingBlocks {
         });
         document.dispatchEvent(event);
         //console.log("args: " + args.MOTOR+ " " + args.TOUCHPRESS + " " + args.COLOR);
-        return new Promise(function (resolve) {
-            let init1 = setInterval(function () {
+        return new Promise((resolve) => {
+            let init1 = setInterval(() => {
                 if (mabotSensorStatesManager.statusChanged) {
                     let detectedAngle = 0;
                     if (direction === "gyro_x")
@@ -532,7 +534,7 @@ class Scratch3SensingBlocks {
                     mabotSensorStatesManager.statusChanged = false;
                     clearInterval(init1);
                 }
-            }, 20);
+            }, this.checkInterval);
         });
     }
 
@@ -549,8 +551,8 @@ class Scratch3SensingBlocks {
             }
         });
         document.dispatchEvent(event);
-        return new Promise(function (resolve) {
-            let init1 = setInterval(function () {
+        return new Promise((resolve) => {
+            let init1 = setInterval(() => {
                 if (mabotSensorStatesManager.statusChanged) {
                     if (mabotSensorStatesManager.colorSensorIndex === mabot_color_sensor_index) {
                         resolve(mabotSensorStatesManager.colorData[0]);
@@ -559,7 +561,7 @@ class Scratch3SensingBlocks {
                     mabotSensorStatesManager.statusChanged = false;
                     clearInterval(init1);
                 }
-            }, 20);
+            }, this.checkInterval);
         });
     }
 
@@ -574,8 +576,8 @@ class Scratch3SensingBlocks {
             }
         });
         document.dispatchEvent(event);
-        return new Promise(function (resolve) {
-            let init1 = setInterval(function () {
+        return new Promise((resolve) => {
+            let init1 = setInterval(() => {
                 if (mabotSensorStatesManager.statusChanged) {
                     if (mabotSensorStatesManager.IRSensorIndex === mabot_IR_sensor_index) {
                         resolve(mabotSensorStatesManager.distance);
@@ -584,7 +586,7 @@ class Scratch3SensingBlocks {
                     mabotSensorStatesManager.statusChanged = false;
                     clearInterval(init1);
                 }
-            }, 20);
+            }, this.checkInterval);
         });
     }
 
@@ -598,8 +600,8 @@ class Scratch3SensingBlocks {
         });
         document.dispatchEvent(event);
 
-        return new Promise(function (resolve) {
-            let init1 = setInterval(function () {
+        return new Promise((resolve) => {
+            let init1 = setInterval(() => {
                 if (mabotSensorStatesManager.statusChanged) {
                     // let detectedAngle = [];
                     // if (direction === "gyro_x")
@@ -621,7 +623,7 @@ class Scratch3SensingBlocks {
                     mabotSensorStatesManager.statusChanged = false;
                     clearInterval(init1);
                 }
-            }, 20);
+            }, this.checkInterval);
         });
     }
 
