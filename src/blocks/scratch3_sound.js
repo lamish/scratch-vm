@@ -356,8 +356,8 @@ class Scratch3SoundBlocks {
         const target_light = args.CENTER.replace(/\s/g, "");
         const light_color = Cast.toNumber(args.COLOR);
         const light_mode = Cast.toNumber(args.MODE);
-        const time_seconds = args.SECONDS === undefined ? 0 : Cast.toNumber(args.SECONDS);
-        const block_or_not = args.BLOCK === undefined ? false : args.BLOCK.indexOf('onebyone.png') > -1;
+        const time_seconds = args.SECONDS === undefined ? undefined : Cast.toNumber(args.SECONDS);
+        const block_or_not = args.BLOCK === undefined ? undefined : args.BLOCK.indexOf('onebyone.png') > -1;
 
         const temp = target_light.split('#');
         const main_light = temp[0] ? [temp[0]] : [];
