@@ -514,19 +514,20 @@ class Scratch3SensingBlocks {
         document.dispatchEvent(event);
         //console.log("args: " + args.MOTOR+ " " + args.TOUCHPRESS + " " + args.COLOR);
         return new Promise((resolve) => {
+            let timeout = null;
             let init1 = setInterval(() => {
                 if (mabotSensorStatesManager.statusChanged) {
                     let detectedAngle = 0;
                     if (direction === "gyro_x")
-                        detectedAngle = mabotSensorStatesManager.gyro_x[0] + mabotSensorStatesManager.gyro_x[1] * 256;
+                        detectedAngle = mabotSensorStatesManager.gyro_x;
                     else if (direction === "gyro_y")
-                        detectedAngle = mabotSensorStatesManager.gyro_y[0] + mabotSensorStatesManager.gyro_y[1] * 256;
+                        detectedAngle = mabotSensorStatesManager.gyro_y;
                     else if (direction === "gyro_z")
-                        detectedAngle = mabotSensorStatesManager.gyro_z[0] + mabotSensorStatesManager.gyro_z[1] * 256;
+                        detectedAngle = mabotSensorStatesManager.gyro_z;
 
                     detectedAngle = detectedAngle % 360;
-                    // console.log(direction + " : " + detectedAngle);
-                    // console.log(equalsOrNot + " , " + angle);
+                    console.log(direction + " : " + detectedAngle);
+                    console.log(equalsOrNot + " , " + angle);
                     if (detectedAngle >= angle) {
                         if (equalsOrNot === "GREATER")
                             resolve(true);
@@ -540,8 +541,13 @@ class Scratch3SensingBlocks {
                     }
                     mabotSensorStatesManager.statusChanged = false;
                     clearInterval(init1);
+                    clearTimeout(timeout);
                 }
             }, this.checkInterval);
+            timeout = setTimeout(() => {
+                clearInterval(init1);
+                resolve();
+            }, 3000)
         });
     }
 
@@ -608,29 +614,32 @@ class Scratch3SensingBlocks {
         document.dispatchEvent(event);
 
         return new Promise((resolve) => {
+            let timeout = null;
             let init1 = setInterval(() => {
                 if (mabotSensorStatesManager.statusChanged) {
-                    // let detectedAngle = [];
-                    // if (direction === "gyro_x")
-                    //     detectedAngle[0] = (mabotSensorStatesManager.gyro_x[0] + mabotSensorStatesManager.gyro_x[1] * 256) % 360;
-                    // else if (direction === "gyro_y")
-                    //     detectedAngle[1] = (mabotSensorStatesManager.gyro_y[0] + mabotSensorStatesManager.gyro_y[1] * 256) % 360;
-                    // else if (direction === "gyro_z")
-                    //     detectedAngle[2] = (mabotSensorStatesManager.gyro_z[0] + mabotSensorStatesManager.gyro_z[1] * 256) % 360;
-                    // resolve(detectedAngle);
                     let detectedAngle = 0;
                     if (direction === "gyro_x")
-                        detectedAngle = mabotSensorStatesManager.gyro_x[0] + mabotSensorStatesManager.gyro_x[1] * 256;
+                        detectedAngle = mabotSensorStatesManager.gyro_x;
                     else if (direction === "gyro_y")
-                        detectedAngle = mabotSensorStatesManager.gyro_y[0] + mabotSensorStatesManager.gyro_y[1] * 256;
+                        detectedAngle = mabotSensorStatesManager.gyro_y;
                     else if (direction === "gyro_z")
-                        detectedAngle = mabotSensorStatesManager.gyro_z[0] + mabotSensorStatesManager.gyro_z[1] * 256;
+                        detectedAngle = mabotSensorStatesManager.gyro_z;
+
                     detectedAngle = detectedAngle % 360;
+
+                    console.log(`DetectGetGyroValue`, direction + " : " + detectedAngle);
+
                     resolve(detectedAngle);
                     mabotSensorStatesManager.statusChanged = false;
                     clearInterval(init1);
+                    clearTimeout(timeout);
                 }
             }, this.checkInterval);
+
+            timeout = setTimeout(() => {
+                clearInterval(init1);
+                resolve();
+            }, 3000)
         });
     }
 
