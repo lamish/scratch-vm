@@ -390,13 +390,13 @@ class Scratch3SensingBlocks {
 
         document.dispatchEvent(event);
         // console.log(`touch_press`, touch_press)
-        //console.log("mabot_sensor_index: ", mabotSensorStatesManager.touch_ball_index);
-        return new Promise((resolve) => {
+        // console.log("mabot_sensor_index: ", mabotSensorStatesManager.touch_ball_index);
+        return new Promise((resolve) => {          
+            let timeout = null;
             let init1 = setInterval(() => {
-                let timeout = null;
                 if (mabotSensorStatesManager.statusChanged) {
                     if (mabotSensorStatesManager.touch_ball_index === mabot_touch_ball_index && mabotSensorStatesManager.touch_ball_pressed === true) {
-                        // console.log("按钮按下");
+                        console.log("按钮按下");
                         if(touch_press === 'PRESS') {
                             resolve(true);
                         } else {
@@ -404,7 +404,7 @@ class Scratch3SensingBlocks {
                         }
 
                     } else {
-                        // console.log("按钮没按下");
+                        console.log("按钮没按下");
                         if(touch_press === 'PRESS') {
                             resolve(false);
                         } else {
@@ -414,13 +414,14 @@ class Scratch3SensingBlocks {
                     mabotSensorStatesManager.statusChanged = false;
                     clearTimeout(timeout);
                     clearInterval(init1);
-                }else{
-                    timeout = setTimeout(() => {
-                        clearInterval(init1);
-                        resolve(false);
-                    }, 3000)
                 }
             }, this.checkInterval);
+            // 超时
+            timeout = setTimeout(() => {
+                console.log(`timeout`)
+                clearInterval(init1);
+                resolve();
+            }, 500)
         });
     }
 
@@ -439,6 +440,7 @@ class Scratch3SensingBlocks {
         document.dispatchEvent(event);
         //console.log("args: " + args.MOTOR + " " + args.TOUCHPRESS + " " + args.COLOR);
         return new Promise((resolve) => {
+            let timeout = null;
             let init1 = setInterval(() => {
                 if (mabotSensorStatesManager.statusChanged) {
                     if (mabotSensorStatesManager.colorSensorIndex === mabot_color_sensor_index && mabotSensorStatesManager.colorData[0] === color) {
@@ -455,12 +457,14 @@ class Scratch3SensingBlocks {
                             resolve(false);
                     }
                     mabotSensorStatesManager.statusChanged = false;
+                    clearTimeout(timeout);
                     clearInterval(init1);
-                } else {
-                    // console.log("mabot_color_sensor_index: " + mabotSensorStatesManager.colorSensorIndex);
-                    // console.log("color: " + mabotSensorStatesManager.colorData);
                 }
             }, this.checkInterval);
+            timeout = setTimeout(() => {
+                clearInterval(init1);
+                resolve();
+            }, 500)
         });
     }
 
@@ -479,6 +483,7 @@ class Scratch3SensingBlocks {
         document.dispatchEvent(event);
         //console.log("args: " + args.MOTOR+ " " + args.TOUCHPRESS + " " + args.COLOR);
         return new Promise((resolve) => {
+            let timeout = null;
             let init1 = setInterval(() => {
                 if (mabotSensorStatesManager.statusChanged) {
                     if (mabotSensorStatesManager.IRSensorIndex === mabot_IR_sensor_index && mabotSensorStatesManager.distance >= distance) {
@@ -495,10 +500,15 @@ class Scratch3SensingBlocks {
                             resolve(false);
                     }
                     mabotSensorStatesManager.statusChanged = false;
+                    clearTimeout(timeout);
                     clearInterval(init1);
                 }
             }, this.checkInterval);
-        });
+            timeout = setTimeout(() => {
+                clearInterval(init1);
+                resolve();
+            }, 500);
+        });  
     }
 
     DetectGyroAngleValue(args) {
@@ -547,7 +557,7 @@ class Scratch3SensingBlocks {
             timeout = setTimeout(() => {
                 clearInterval(init1);
                 resolve();
-            }, 3000)
+            }, 500)
         });
     }
 
