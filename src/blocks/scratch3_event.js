@@ -199,10 +199,10 @@ class Scratch3EventBlocks {
             }
         });
         document.dispatchEvent(event);
-
-        if (mabotSensorStatesManager.statusChanged) {
-            mabotSensorStatesManager.statusChanged = false;
-            if (mabotSensorStatesManager.colorSensorIndex === mabot_color_sensor_index && mabotSensorStatesManager.colorData[0] === target_color) {
+        const colorSensor = mabotSensorStatesManager.colorSensor;
+        if (colorSensor.statusChanged) {
+            colorSensor.statusChanged = false;
+            if (colorSensor.colorSensorIndex === mabot_color_sensor_index && colorSensor.colorData[0] === target_color) {
                 console.log("color equals，");
                 return true;
             } else {
@@ -228,9 +228,9 @@ class Scratch3EventBlocks {
             }
         });
         document.dispatchEvent(event);
-
-        if (mabotSensorStatesManager.statusChanged) {
-            mabotSensorStatesManager.statusChanged = false;
+        const gyroSensor = mabotSensorStatesManager.gyroSensor;
+        if (gyroSensor.statusChanged) {
+            gyroSensor.statusChanged = false;
             let detectedAngle = 0;
             /**
              *
@@ -240,11 +240,11 @@ class Scratch3EventBlocks {
              *
              */
             if (direction === "gyro_x")
-                detectedAngle = mabotSensorStatesManager.gyro_x;
+                detectedAngle = gyroSensor.gyro_x;
             else if (direction === "gyro_y")
-                detectedAngle = mabotSensorStatesManager.gyro_y;
+                detectedAngle = gyroSensor.gyro_y;
             else if (direction === "gyro_z")
-                detectedAngle = mabotSensorStatesManager.gyro_z;
+                detectedAngle = gyroSensor.gyro_z;
 
             console.log("detectedAngle angle:", detectedAngle, angle);
             if (detectedAngle >= angle) {
@@ -271,14 +271,15 @@ class Scratch3EventBlocks {
             }
         });
         document.dispatchEvent(event);
-
-        if (mabotSensorStatesManager.statusChanged) {
-            mabotSensorStatesManager.statusChanged = false;
-            if (mabotSensorStatesManager.IRSensorIndex === target_infrared && mabotSensorStatesManager.distance >= target_infrared_value) {
-                console.log("distance greater than " + target_infrared_value);
+        const IRSensor = mabotSensorStatesManager.IRSensor;
+        if (IRSensor.statusChanged) {
+            IRSensor.statusChanged = false;
+            console.log(`distance infraredSensor`, IRSensor.IRSensorIndex, IRSensor.touch_ball_index)
+            if (IRSensor.IRSensorIndex === target_infrared && IRSensor.distance >= target_infrared_value) {
+                console.log("distance greater than " + target_infrared_value, target_infrared_as === "GREATER");
                 return target_infrared_as === "GREATER";
             } else {
-                console.log("distance less than " + target_infrared_value);
+                console.log("distance less than " + target_infrared_value, target_infrared_as === "LESS");
                 return target_infrared_as === "LESS";
             }
         }
@@ -297,14 +298,15 @@ class Scratch3EventBlocks {
             }
         });
         document.dispatchEvent(event);
-
-        if (mabotSensorStatesManager.statusChanged) {
-            mabotSensorStatesManager.statusChanged = false;
-            if (mabotSensorStatesManager.touch_ball_index === target_touch && mabotSensorStatesManager.touch_ball_pressed === true) {
-                console.log("pressed，", mabotSensorStatesManager.touch_ball_index);
+        const touchSensor = mabotSensorStatesManager.touchSensor;
+        if (touchSensor.statusChanged) {
+            touchSensor.statusChanged = false;
+            console.log(`Sensor touch ball`, touchSensor.touch_ball_index, target_touch, touchSensor.touch_ball_pressed)
+            if (touchSensor.touch_ball_index === target_touch && touchSensor.touch_ball_pressed === true) {
+                console.log("pressed，", touchSensor.touch_ball_index);
                 return target_touch_isPress === 1;
             } else {
-                console.log("unpressed，", mabotSensorStatesManager.touch_ball_pressed);
+                console.log("unpressed，", touchSensor.touch_ball_pressed);
                 return target_touch_isPress === 0;
             }
         }

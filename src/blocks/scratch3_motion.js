@@ -542,10 +542,11 @@ class Scratch3MotionBlocks {
         document.dispatchEvent(event);
         return new Promise(function (resolve) {
             let init = setInterval(function () {
-                if (mabotSensorStatesManager.statusChanged) {
-                    const angle = mabotSensorStatesManager.horizontalJointAngle - 90;
+                const getHorizontalJointAngle = mabotSensorStatesManager.getHorizontalJointAngle
+                if (getHorizontalJointAngle.statusChanged) {
+                    const angle = getHorizontalJointAngle.horizontalJointAngle - 90;
                     resolve(angle);
-                    mabotSensorStatesManager.statusChanged = false;
+                    getHorizontalJointAngle.statusChanged = false;
                     clearInterval(init);
                 }
             }, 20);
@@ -566,10 +567,11 @@ class Scratch3MotionBlocks {
         document.dispatchEvent(event);
         return new Promise(function (resolve) {
             let init = setInterval(function () {
-                if (mabotSensorStatesManager.statusChanged) {
-                    const angle = mabotSensorStatesManager.swingJointAngle - 90;
+                const getSwingJointAngle = mabotSensorStatesManager.getSwingJointAngle;
+                if (getSwingJointAngle.statusChanged) {
+                    const angle = getSwingJointAngle.swingJointAngle - 90;
                     resolve(angle);
-                    mabotSensorStatesManager.statusChanged = false;
+                    getSwingJointAngle.statusChanged = false;
                     clearInterval(init);
                 }
             }, 20);

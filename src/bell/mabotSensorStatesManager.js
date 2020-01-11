@@ -22,9 +22,18 @@ class MabotSensorStatesManager {
         this.gyro_z = 0;
 
         this.statusChanged = false;
+
+        this.getHorizontalJointAngle = {};
+        this.getSwingJointAngle = {};
+        this.IRSensor = {};
+        this.touchSensor = {};
+        this.colorSensor = {};
+        this.gyroSensor = {};
+        
     }
 
     onSensorStateChanged(data) {
+    
         this.touchSensor = data.touchSensor;
         this.motorBallIndex = data.motorBallIndex;
         this.motorBallSpeed = data.motorBallSpeed;
@@ -47,6 +56,37 @@ class MabotSensorStatesManager {
         this.gyro_z = data.gyro_z;
 
         this.statusChanged = true;
+        
+        if(data.horizontalJointAngle !== undefined) {
+            this.getHorizontalJointAngle = data;
+            this.getHorizontalJointAngle.statusChanged = true;
+        }
+
+        if(data.swingJointAngle !== undefined) {
+            this.getSwingJointAngle = data;
+            this.getSwingJointAngle.statusChanged = true;
+        }
+
+        if(data.touch_ball_index) {
+            this.touchSensor = data;
+            this.touchSensor.statusChanged = true;
+        }
+
+        if(data.colorSensorIndex) {
+            this.colorSensor = data;
+            this.colorSensor.statusChanged = true;
+        }
+
+        if(data.IRSensorIndex) {
+            this.IRSensor = data;
+            this.IRSensor.statusChanged = true;
+        }
+
+        if(data.gyro_x) {
+            this.gyroSensor = data;
+            this.gyroSensor.statusChanged = true;
+        }
+       
     }
 }
 
