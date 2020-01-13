@@ -394,8 +394,9 @@ class Scratch3SensingBlocks {
         return new Promise((resolve) => {          
             let timeout = null;
             let init1 = setInterval(() => {
-                if (mabotSensorStatesManager.statusChanged) {
-                    if (mabotSensorStatesManager.touch_ball_index === mabot_touch_ball_index && mabotSensorStatesManager.touch_ball_pressed === true) {
+                const touchSensor = mabotSensorStatesManager.touchSensor;
+                if (touchSensor.statusChanged) {
+                    if (touchSensor.touch_ball_index === mabot_touch_ball_index && touchSensor.touch_ball_pressed === true) {
                         console.log("按钮按下");
                         if(touch_press === 'PRESS') {
                             resolve(true);
@@ -411,7 +412,7 @@ class Scratch3SensingBlocks {
                             resolve(true);
                         }
                     }
-                    mabotSensorStatesManager.statusChanged = false;
+                    touchSensor.statusChanged = false;
                     clearTimeout(timeout);
                     clearInterval(init1);
                 }
@@ -442,8 +443,9 @@ class Scratch3SensingBlocks {
         return new Promise((resolve) => {
             let timeout = null;
             let init1 = setInterval(() => {
-                if (mabotSensorStatesManager.statusChanged) {
-                    if (mabotSensorStatesManager.colorSensorIndex === mabot_color_sensor_index && mabotSensorStatesManager.colorData[0] === color) {
+                const colorSensor = mabotSensorStatesManager.colorSensor;
+                if (colorSensor.statusChanged) {
+                    if (colorSensor.colorSensorIndex === mabot_color_sensor_index && colorSensor.colorData[0] === color) {
                         console.log("color equals，");
                         if (equalsOrNot === "EQUALS")
                             resolve(true);
@@ -456,7 +458,7 @@ class Scratch3SensingBlocks {
                         else
                             resolve(false);
                     }
-                    mabotSensorStatesManager.statusChanged = false;
+                    colorSensor.statusChanged = false;
                     clearTimeout(timeout);
                     clearInterval(init1);
                 }
@@ -485,8 +487,9 @@ class Scratch3SensingBlocks {
         return new Promise((resolve) => {
             let timeout = null;
             let init1 = setInterval(() => {
-                if (mabotSensorStatesManager.statusChanged) {
-                    if (mabotSensorStatesManager.IRSensorIndex === mabot_IR_sensor_index && mabotSensorStatesManager.distance >= distance) {
+                const IRSensor = mabotSensorStatesManager.IRSensor;
+                if (IRSensor.statusChanged) {
+                    if (IRSensor.IRSensorIndex === mabot_IR_sensor_index && IRSensor.distance >= distance) {
                         console.log("distance greater than " + distance);
                         if (equalsOrNot === "GREATER")
                             resolve(true);
@@ -499,7 +502,7 @@ class Scratch3SensingBlocks {
                         else
                             resolve(false);
                     }
-                    mabotSensorStatesManager.statusChanged = false;
+                    IRSensor.statusChanged = false;
                     clearTimeout(timeout);
                     clearInterval(init1);
                 }
@@ -526,14 +529,15 @@ class Scratch3SensingBlocks {
         return new Promise((resolve) => {
             let timeout = null;
             let init1 = setInterval(() => {
-                if (mabotSensorStatesManager.statusChanged) {
+                const gyroSensor = mabotSensorStatesManager.gyroSensor;
+                if (gyroSensor.statusChanged) {
                     let detectedAngle = 0;
                     if (direction === "gyro_x")
-                        detectedAngle = mabotSensorStatesManager.gyro_x;
+                        detectedAngle = gyroSensor.gyro_x;
                     else if (direction === "gyro_y")
-                        detectedAngle = mabotSensorStatesManager.gyro_y;
+                        detectedAngle = gyroSensor.gyro_y;
                     else if (direction === "gyro_z")
-                        detectedAngle = mabotSensorStatesManager.gyro_z;
+                        detectedAngle = gyroSensor.gyro_z;
 
                     detectedAngle = detectedAngle % 360;
                     console.log(direction + " : " + detectedAngle);
@@ -549,7 +553,7 @@ class Scratch3SensingBlocks {
                         else
                             resolve(false);
                     }
-                    mabotSensorStatesManager.statusChanged = false;
+                    gyroSensor.statusChanged = false;
                     clearInterval(init1);
                     clearTimeout(timeout);
                 }
@@ -576,12 +580,13 @@ class Scratch3SensingBlocks {
         document.dispatchEvent(event);
         return new Promise((resolve) => {
             let init1 = setInterval(() => {
-                if (mabotSensorStatesManager.statusChanged) {
-                    if (mabotSensorStatesManager.colorSensorIndex === mabot_color_sensor_index) {
-                        resolve(mabotSensorStatesManager.colorData[0]);
+                const colorSensor = mabotSensorStatesManager.colorSensor;
+                if (colorSensor.statusChanged) {
+                    if (colorSensor.colorSensorIndex === mabot_color_sensor_index) {
+                        resolve(colorSensor.colorData[0]);
                     } else
                         resolve(0);
-                    mabotSensorStatesManager.statusChanged = false;
+                        colorSensor.statusChanged = false;
                     clearInterval(init1);
                 }
             }, this.checkInterval);
@@ -601,12 +606,13 @@ class Scratch3SensingBlocks {
         document.dispatchEvent(event);
         return new Promise((resolve) => {
             let init1 = setInterval(() => {
-                if (mabotSensorStatesManager.statusChanged) {
-                    if (mabotSensorStatesManager.IRSensorIndex === mabot_IR_sensor_index) {
-                        resolve(mabotSensorStatesManager.distance);
+                const IRSensor = mabotSensorStatesManager.IRSensor;
+                if (IRSensor.statusChanged) {
+                    if (IRSensor.IRSensorIndex === mabot_IR_sensor_index) {
+                        resolve(IRSensor.distance);
                     } else
                         resolve(0);
-                    mabotSensorStatesManager.statusChanged = false;
+                        IRSensor.statusChanged = false;
                     clearInterval(init1);
                 }
             }, this.checkInterval);
@@ -626,21 +632,22 @@ class Scratch3SensingBlocks {
         return new Promise((resolve) => {
             let timeout = null;
             let init1 = setInterval(() => {
-                if (mabotSensorStatesManager.statusChanged) {
+                const gyroSensor = mabotSensorStatesManager.gyroSensor
+                if (gyroSensor.statusChanged) {
                     let detectedAngle = 0;
                     if (direction === "gyro_x")
-                        detectedAngle = mabotSensorStatesManager.gyro_x;
+                        detectedAngle = gyroSensor.gyro_x;
                     else if (direction === "gyro_y")
-                        detectedAngle = mabotSensorStatesManager.gyro_y;
+                        detectedAngle = gyroSensor.gyro_y;
                     else if (direction === "gyro_z")
-                        detectedAngle = mabotSensorStatesManager.gyro_z;
+                        detectedAngle = gyroSensor.gyro_z;
 
                     detectedAngle = detectedAngle % 360;
 
                     console.log(`DetectGetGyroValue`, direction + " : " + detectedAngle);
 
                     resolve(detectedAngle);
-                    mabotSensorStatesManager.statusChanged = false;
+                    gyroSensor.statusChanged = false;
                     clearInterval(init1);
                     clearTimeout(timeout);
                 }
