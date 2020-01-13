@@ -199,18 +199,14 @@ class Scratch3EventBlocks {
             }
         });
         document.dispatchEvent(event);
-        const colorSensor = mabotSensorStatesManager.colorSensor;
-        if (colorSensor.statusChanged) {
+        const colorSensor = mabotSensorStatesManager.colorSensor[mabot_color_sensor_index];
+        if (colorSensor && colorSensor.statusChanged) {
             colorSensor.statusChanged = false;
-            if (colorSensor.colorSensorIndex === mabot_color_sensor_index && colorSensor.colorData[0] === target_color) {
+            if (colorSensor.colorData[0] === target_color) {
                 console.log("color equals，");
                 return true;
             } else {
                 console.log("color not equals，");
-                // if (mabotSensorStatesManager.colorSensorIndex !== mabot_color_sensor_index)
-                //     console.log(`mabotSensorStatesManager.colorSensorIndex:${mabotSensorStatesManager.colorSensorIndex},mabot_color_sensor_index:${mabot_color_sensor_index}`)
-                // if (mabotSensorStatesManager.colorData[0] !== target_color)
-                //     console.log(`mabotSensorStatesManager.colorData[0]: ${mabotSensorStatesManager.colorData[0]},target_color: ${target_color}`)
                 return false;
             }
         }
@@ -271,11 +267,11 @@ class Scratch3EventBlocks {
             }
         });
         document.dispatchEvent(event);
-        const IRSensor = mabotSensorStatesManager.IRSensor;
-        if (IRSensor.statusChanged) {
+        const IRSensor = mabotSensorStatesManager.IRSensor[target_infrared];
+        if (IRSensor && IRSensor.statusChanged) {
             IRSensor.statusChanged = false;
             console.log(`distance infraredSensor`, IRSensor.IRSensorIndex, IRSensor.touch_ball_index)
-            if (IRSensor.IRSensorIndex === target_infrared && IRSensor.distance >= target_infrared_value) {
+            if (IRSensor.distance >= target_infrared_value) {
                 console.log("distance greater than " + target_infrared_value, target_infrared_as === "GREATER");
                 return target_infrared_as === "GREATER";
             } else {
@@ -298,15 +294,17 @@ class Scratch3EventBlocks {
             }
         });
         document.dispatchEvent(event);
-        const touchSensor = mabotSensorStatesManager.touchSensor;
-        if (touchSensor.statusChanged) {
-            touchSensor.statusChanged = false;
-            console.log(`Sensor touch ball`, touchSensor.touch_ball_index, target_touch, touchSensor.touch_ball_pressed)
-            if (touchSensor.touch_ball_index === target_touch && touchSensor.touch_ball_pressed === true) {
-                console.log("pressed，", touchSensor.touch_ball_index);
+        const touchBallSensor = mabotSensorStatesManager.touchBallSensor[target_touch];
+
+
+        if (touchBallSensor && touchBallSensor.statusChanged) {
+            touchBallSensor.statusChanged = false;
+            console.log(`Sensor touch ball`, touchBallSensor.touch_ball_index, target_touch, touchBallSensor.touch_ball_pressed)
+            if (touchBallSensor.touch_ball_pressed === true) {
+                console.log("pressed，", touchBallSensor.touch_ball_index);
                 return target_touch_isPress === 1;
             } else {
-                console.log("unpressed，", touchSensor.touch_ball_pressed);
+                console.log("unpressed，", touchBallSensor.touch_ball_pressed);
                 return target_touch_isPress === 0;
             }
         }

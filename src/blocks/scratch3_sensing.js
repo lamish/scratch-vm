@@ -394,9 +394,9 @@ class Scratch3SensingBlocks {
         return new Promise((resolve) => {          
             let timeout = null;
             let init1 = setInterval(() => {
-                const touchSensor = mabotSensorStatesManager.touchSensor;
-                if (touchSensor.statusChanged) {
-                    if (touchSensor.touch_ball_index === mabot_touch_ball_index && touchSensor.touch_ball_pressed === true) {
+                const touchBallSensor = mabotSensorStatesManager.touchBallSensor;
+                if (touchBallSensor.statusChanged) {
+                    if (touchBallSensor.touch_ball_index === mabot_touch_ball_index && touchBallSensor.touch_ball_pressed === true) {
                         console.log("按钮按下");
                         if(touch_press === 'PRESS') {
                             resolve(true);
@@ -412,7 +412,7 @@ class Scratch3SensingBlocks {
                             resolve(true);
                         }
                     }
-                    touchSensor.statusChanged = false;
+                    touchBallSensor.statusChanged = false;
                     clearTimeout(timeout);
                     clearInterval(init1);
                 }
@@ -443,8 +443,8 @@ class Scratch3SensingBlocks {
         return new Promise((resolve) => {
             let timeout = null;
             let init1 = setInterval(() => {
-                const colorSensor = mabotSensorStatesManager.colorSensor;
-                if (colorSensor.statusChanged) {
+                const colorSensor = mabotSensorStatesManager.colorSensor[mabot_color_sensor_index];
+                if (colorSensor && colorSensor.statusChanged) {
                     if (colorSensor.colorSensorIndex === mabot_color_sensor_index && colorSensor.colorData[0] === color) {
                         console.log("color equals，");
                         if (equalsOrNot === "EQUALS")
@@ -487,9 +487,9 @@ class Scratch3SensingBlocks {
         return new Promise((resolve) => {
             let timeout = null;
             let init1 = setInterval(() => {
-                const IRSensor = mabotSensorStatesManager.IRSensor;
-                if (IRSensor.statusChanged) {
-                    if (IRSensor.IRSensorIndex === mabot_IR_sensor_index && IRSensor.distance >= distance) {
+                const IRSensor = mabotSensorStatesManager.IRSensor[mabot_IR_sensor_index];
+                if (IRSensor && IRSensor.statusChanged) {
+                    if (IRSensor.distance >= distance) {
                         console.log("distance greater than " + distance);
                         if (equalsOrNot === "GREATER")
                             resolve(true);
@@ -580,13 +580,14 @@ class Scratch3SensingBlocks {
         document.dispatchEvent(event);
         return new Promise((resolve) => {
             let init1 = setInterval(() => {
-                const colorSensor = mabotSensorStatesManager.colorSensor;
-                if (colorSensor.statusChanged) {
+                const colorSensor = mabotSensorStatesManager.colorSensor[mabot_color_sensor_index];
+                if (colorSensor && colorSensor.statusChanged) {
                     if (colorSensor.colorSensorIndex === mabot_color_sensor_index) {
                         resolve(colorSensor.colorData[0]);
-                    } else
+                    } else {
                         resolve(0);
-                        colorSensor.statusChanged = false;
+                    }
+                    colorSensor.statusChanged = false;
                     clearInterval(init1);
                 }
             }, this.checkInterval);
@@ -606,13 +607,14 @@ class Scratch3SensingBlocks {
         document.dispatchEvent(event);
         return new Promise((resolve) => {
             let init1 = setInterval(() => {
-                const IRSensor = mabotSensorStatesManager.IRSensor;
-                if (IRSensor.statusChanged) {
+                const IRSensor = mabotSensorStatesManager.IRSensor[mabot_IR_sensor_index];
+                if (IRSensor && IRSensor.statusChanged) {
                     if (IRSensor.IRSensorIndex === mabot_IR_sensor_index) {
                         resolve(IRSensor.distance);
-                    } else
+                    } else {
                         resolve(0);
-                        IRSensor.statusChanged = false;
+                    }
+                    IRSensor.statusChanged = false;
                     clearInterval(init1);
                 }
             }, this.checkInterval);
