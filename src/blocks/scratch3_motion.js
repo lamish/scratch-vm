@@ -2,6 +2,9 @@ const Cast = require('../util/cast');
 const MathUtil = require('../util/math-util');
 const Timer = require('../util/timer');
 const mabotSensorStatesManager = require('../bell/mabotSensorStatesManager');
+const ANGLE_LOOP_TIME = 50;
+const ANGLE_LOOP_TIMEOUT = 1000;
+const TIME_OUT = 1000;
 
 class Scratch3MotionBlocks {
     constructor(runtime) {
@@ -431,7 +434,7 @@ class Scratch3MotionBlocks {
 
                     let interval = setInterval(() => {
                         // 获取角度
-                        this.getMabotHorizontalJoint({mabot_horizontalJoint_index}).then(angle => {
+                        /* this.getMabotHorizontalJoint({mabot_horizontalJoint_index}).then(angle => {
                             // console.log(`changeAngle`,changeAngle, `angle`, angle)
                             if(angle >= changeAngle - 5 && angle <= changeAngle + 5) {
                                 // 在误差范围内则判定动作完成
@@ -440,7 +443,19 @@ class Scratch3MotionBlocks {
                                 clearTimeout(timer);
                                 resolve();
                             }
+                        }); */
+                        this.getAllMabotHorizontalJoint().then(angleArr => {
+                            console.log(`angleArr`, angleArr)
+                            const angle = angleArr[mabot_horizontalJoint_index - 1];
+                            if(angle >= changeAngle - 10 && angle <= changeAngle + 10) {
+                                // 在误差范围内则判定动作完成
+                                console.log(`HorizontalJoint在误差范围内则判定动作完成`)
+                                clearInterval(interval);
+                                clearTimeout(timer);
+                                resolve();
+                            }
                         });
+    
                     }, 200);
 
                     timer = setTimeout(() => {
@@ -448,7 +463,7 @@ class Scratch3MotionBlocks {
                         console.log(`HorizontalJoint超时也判定动作完成`)
                         clearInterval(interval);
                         resolve();
-                    }, 3000);
+                    }, TIME_OUT);
                 });
 
                 return p;
@@ -502,7 +517,7 @@ class Scratch3MotionBlocks {
 
                     let interval = setInterval(() => {
                         // 获取角度
-                        this.getMabotSwingJoint({mabot_swingJoint_index}).then(angle => {
+                       /*  this.getMabotSwingJoint({mabot_swingJoint_index}).then(angle => {
                             if(angle >= changeAngle - 5 && angle <= changeAngle + 5) {
                                 // 在误差范围内则判定动作完成
                                 console.log(`SwingJoint在误差范围内则判定动作完成`)
@@ -510,7 +525,19 @@ class Scratch3MotionBlocks {
                                 clearTimeout(timer);
                                 resolve();
                             }
+                        }); */
+                        this.getAllMabotSwingJoint().then(angleArr => {
+                            console.log(`angleArr`, angleArr)
+                            const angle = angleArr[mabot_swingJoint_index - 1];
+                            if(angle >= changeAngle - 10 && angle <= changeAngle + 10) {
+                                // 在误差范围内则判定动作完成
+                                console.log(`SwingJoint在误差范围内则判定动作完成`)
+                                clearInterval(interval);
+                                clearTimeout(timer);
+                                resolve();
+                            }
                         });
+
                     }, 200);
 
                     timer = setTimeout(() => {
@@ -518,7 +545,7 @@ class Scratch3MotionBlocks {
                         console.log(`SwingJoint超时也判定动作完成`)
                         clearInterval(interval);
                         resolve();
-                    }, 3000);
+                    }, TIME_OUT);
                 });
 
                 return p;
@@ -541,16 +568,20 @@ class Scratch3MotionBlocks {
         });
         document.dispatchEvent(event);
         return new Promise(function (resolve) {
+            let timeout = null;
             let init = setInterval(function () {
                 const getHorizontalJointAngle = mabotSensorStatesManager.getHorizontalJointAngle
                 if (getHorizontalJointAngle.statusChanged) {
                     const angle = getHorizontalJointAngle.horizontalJointAngle - 90;
                     resolve(angle);
                     getHorizontalJointAngle.statusChanged = false;
+                    clearTimeout(timeout);
                     clearInterval(init);
                 }
-            }, 20);
-
+            }, ANGLE_LOOP_TIME);
+            timeout = setTimeout(() => {
+                clearInterval(init);
+            }, 1000)
         });
     }
 
@@ -566,16 +597,81 @@ class Scratch3MotionBlocks {
         });
         document.dispatchEvent(event);
         return new Promise(function (resolve) {
+            let timeout = null;
             let init = setInterval(function () {
                 const getSwingJointAngle = mabotSensorStatesManager.getSwingJointAngle;
+                console.log(`getSwingJointAngle`, getSwingJointAngle)
                 if (getSwingJointAngle.statusChanged) {
                     const angle = getSwingJointAngle.swingJointAngle - 90;
                     resolve(angle);
                     getSwingJointAngle.statusChanged = false;
+                    clearTimeout(timeout);
                     clearInterval(init);
                 }
-            }, 20);
+            }, ANGLE_LOOP_TIME);
+            timeout = setTimeout(() => {
+                clearInterval(init);
+            }, ANGLE_LOOP_TIMEOUT);
+        });
+    }
 
+    // 获取全部摇摆球角度
+    getAllMabotSwingJoint() {
+        const event = new CustomEvent('mabot', {
+            detail: {
+                type: 'motion_swingJoint_get_all_angle',
+                params: {
+                }
+            }
+        });
+        document.dispatchEvent(event);
+        return new Promise(function (resolve) {
+            let timeout = null;
+            let init = setInterval(function () {
+                const getAllSwingJointAngle = mabotSensorStatesManager.getAllSwingJointAngle;
+                console.log(`getAllSwingJointAngle`, getAllSwingJointAngle)
+                if (getAllSwingJointAngle.statusChanged) {
+                    const angleArr = (getAllSwingJointAngle.angles || []).map(item => (item - 90)); // 转换
+                    console.log(`angleArr`, angleArr)
+                    resolve(angleArr);
+                    getAllSwingJointAngle.statusChanged = false;
+                    clearTimeout(timeout);
+                    clearInterval(init);
+                }
+            }, ANGLE_LOOP_TIME);
+            timeout = setTimeout(() => {
+                clearInterval(init);
+            }, ANGLE_LOOP_TIMEOUT);
+        });
+    }
+
+    // 获取全部水平关节球角度
+    getAllMabotHorizontalJoint() {
+        const event = new CustomEvent('mabot', {
+            detail: {
+                type: 'motion_horizontalJoint_get_all_angle',
+                params: {
+                }
+            }
+        });
+        document.dispatchEvent(event);
+        return new Promise(function (resolve) {
+            let timeout = null;
+            let init = setInterval(function () {
+                const getAllHorizontalJointAngle = mabotSensorStatesManager.getAllHorizontalJointAngle;
+               
+                if (getAllHorizontalJointAngle.statusChanged) {
+                    const angleArr = (getAllHorizontalJointAngle.angles || []).map(item => (item - 90)); // 转换
+                    console.log(`Horizontal_angleArr`, angleArr)
+                    resolve(angleArr);
+                    getAllHorizontalJointAngle.statusChanged = false;
+                    clearTimeout(timeout);
+                    clearInterval(init);
+                }
+            }, ANGLE_LOOP_TIME);
+            timeout = setTimeout(() => {
+                clearInterval(init);
+            }, ANGLE_LOOP_TIMEOUT);
         });
     }
 

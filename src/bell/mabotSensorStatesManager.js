@@ -29,7 +29,8 @@ class MabotSensorStatesManager {
         this.touchBallSensor = {};
         this.colorSensor = {};
         this.gyroSensor = {};
-        
+        this.getAllSwingJointAngle = {};
+        this.getAllHorizontalJointAngle = {};
     }
 
     onSensorStateChanged(data) {
@@ -85,6 +86,16 @@ class MabotSensorStatesManager {
         if(data.gyro_x) {
             this.gyroSensor = data;
             this.gyroSensor.statusChanged = true;
+        }
+
+        if(data.type == 32) {
+            this.getAllSwingJointAngle = data;
+            this.getAllSwingJointAngle.statusChanged = true;
+        }
+
+        if(data.type == 31) {
+            this.getAllHorizontalJointAngle = data;
+            this.getAllHorizontalJointAngle.statusChanged = true;
         }
        
     }
