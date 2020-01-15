@@ -39,8 +39,8 @@ class Scratch3MotionBlocks {
             motion_xposition: this.getX,
             motion_yposition: this.getY,
             motion_direction: this.getDirection,
-            motion_motorBall_rotate_on_power_for_seconds: this.setMabotMotorBallPower,
-            motion_motorBall_rotate_on_power: this.setMabotMotorBallPower1,
+            motion_motorBall_rotate_on_power_for_seconds: this.setMotorBallPower,
+            motion_motorBall_rotate_on_power: this.setMotorBallPower1,
             motion_motorBall_rotate_on_speed_for_seconds: this.setMabotMotorBallSpeed,
             motion_motorBall_rotate_on_speed: this.setMabotMotorBallSpeed1,
             motion_motorBall_stop: this.mabotMotorBallStop,
@@ -68,7 +68,7 @@ class Scratch3MotionBlocks {
         };
     }
 
-    setMabotMotorBallPower(args) {
+    setMotorBallPower(args) {
 
         const mabot_motor_ball_index = Cast.toNumber(args.mabot_motor_ball_index);
         const rotate_direction = Cast.toString(args.rotate_direction);
@@ -136,7 +136,7 @@ class Scratch3MotionBlocks {
         //return mabotSensorStatesManager.motorBall[mabot_motor_ball_index];
     }
 
-    setMabotMotorBallPower1(args) {
+    setMotorBallPower1(args) {
         const mabot_motor_ball_index = Cast.toNumber(args.mabot_motor_ball_index);
         const rotate_direction = Cast.toString(args.rotate_direction);
         const uiPower = Cast.toNumber(args.power);
@@ -245,17 +245,6 @@ class Scratch3MotionBlocks {
     }
 
     setMabotMotorBallSpeed1(args) {
-
-        // 节流， 200ms内只能触发一次
-        if(this.setMabotMotorBallSpeed1.interval) {
-            return;
-        } 
-        this.setMabotMotorBallSpeed1.interval = true;
-
-        setTimeout(() => {
-            this.setMabotMotorBallSpeed1.interval = false;
-        }, 200);
-
         const mabot_motor_ball_index = Cast.toNumber(args.mabot_motor_ball_index);
         const rotate_direction = Cast.toString(args.rotate_direction);
         const speed = Cast.toNumber(args.speed);
