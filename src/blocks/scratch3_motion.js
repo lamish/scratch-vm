@@ -119,7 +119,7 @@ class Scratch3MotionBlocks {
                     params: {
                         mabot_motor_ball_index: item.mabot_motor_ball_index,
                         rotate_direction: item.rotate_direction,
-                        power: item.power,
+                        power: (item.power * 0.8),
                         rotate_for_seconds: item.rotate_for_seconds,
                     }
                 }
@@ -178,7 +178,7 @@ class Scratch3MotionBlocks {
                     params: {
                         mabot_motor_ball_index: item.mabot_motor_ball_index, 
                         rotate_direction: item.rotate_direction,
-                        power: item.power
+                        power: (item.power * 0.8)
                     }
                 }
             });
