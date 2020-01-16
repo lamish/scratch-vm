@@ -394,9 +394,9 @@ class Scratch3SensingBlocks {
         return new Promise((resolve) => {          
             let timeout = null;
             let init1 = setInterval(() => {
-                const touchBallSensor = mabotSensorStatesManager.touchBallSensor;
-                if (touchBallSensor.statusChanged) {
-                    if (touchBallSensor.touch_ball_index === mabot_touch_ball_index && touchBallSensor.touch_ball_pressed === true) {
+                const touchBallSensor = mabotSensorStatesManager.touchBallSensor[mabot_touch_ball_index];
+                if (touchBallSensor && touchBallSensor.statusChanged) {
+                    if (touchBallSensor.touch_ball_pressed === true) {
                         console.log("按钮按下");
                         if(touch_press === 'PRESS') {
                             resolve(true);
