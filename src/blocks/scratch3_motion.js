@@ -13,6 +13,8 @@ class Scratch3MotionBlocks {
          * @type {Runtime}
          */
         this.runtime = runtime;
+
+        this.timeout = 500;
     }
 
     /**
@@ -336,7 +338,8 @@ class Scratch3MotionBlocks {
         });
         document.dispatchEvent(event);
 
-        return new Promise(function (resolve) {
+        return new Promise((resolve) => {
+            let timeout = null;
             let init = setInterval(function () {
                 if (mabotSensorStatesManager.statusChanged) {
                     if (mabotSensorStatesManager.motorBallIndex === mabot_motor_ball_index){
@@ -347,10 +350,15 @@ class Scratch3MotionBlocks {
                         resolve(result);
                         //验证resolve 是否会影响后面程序的执行。
                         mabotSensorStatesManager.statusChanged = false;
+                        clearTimeout(timeout);
                         clearInterval(init);
                     }
                 }
             }, 20);
+            timeout = setTimeout(() => {
+                clearInterval(init);
+                resolve();
+            }, this.timeout);
         });
     }
 
@@ -366,16 +374,22 @@ class Scratch3MotionBlocks {
         });
         document.dispatchEvent(event);
 
-        return new Promise(function (resolve) {
+        return new Promise((resolve) => {
+            let timeout = null;
             let init = setInterval(function () {
                 if (mabotSensorStatesManager.statusChanged) {
                     if (mabotSensorStatesManager.motorBallIndex === mabot_motor_ball_index){
                         resolve(mabotSensorStatesManager.motorBallSpeed);
                         mabotSensorStatesManager.statusChanged = false;
+                        clearTimeout(timeout);
                         clearInterval(init);
                     }
                 }
             }, 20);
+            timeout = setTimeout(() => {
+                clearInterval(init);
+                resolve();
+            }, this.timeout);
         });
     }
 

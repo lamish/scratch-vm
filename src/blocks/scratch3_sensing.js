@@ -47,6 +47,7 @@ class Scratch3SensingBlocks {
         this.runtime.on('STOP_FOR_TARGET', this._clearTargetQuestions.bind(this));
 
         this.checkInterval = 10;
+        this.timeout = 500;
     }
 
     /**
@@ -422,7 +423,7 @@ class Scratch3SensingBlocks {
                 console.log(`timeout`)
                 clearInterval(init1);
                 resolve();
-            }, 500)
+            }, this.timeout)
         });
     }
 
@@ -466,7 +467,7 @@ class Scratch3SensingBlocks {
             timeout = setTimeout(() => {
                 clearInterval(init1);
                 resolve();
-            }, 500)
+            }, this.timeout)
         });
     }
 
@@ -510,7 +511,7 @@ class Scratch3SensingBlocks {
             timeout = setTimeout(() => {
                 clearInterval(init1);
                 resolve();
-            }, 500);
+            }, this.timeout);
         });  
     }
 
@@ -561,7 +562,7 @@ class Scratch3SensingBlocks {
             timeout = setTimeout(() => {
                 clearInterval(init1);
                 resolve();
-            }, 500)
+            }, this.timeout)
         });
     }
 
@@ -579,6 +580,7 @@ class Scratch3SensingBlocks {
         });
         document.dispatchEvent(event);
         return new Promise((resolve) => {
+            let timeout = null;
             let init1 = setInterval(() => {
                 const colorSensor = mabotSensorStatesManager.colorSensor[mabot_color_sensor_index];
                 if (colorSensor && colorSensor.statusChanged) {
@@ -588,9 +590,14 @@ class Scratch3SensingBlocks {
                         resolve(0);
                     }
                     colorSensor.statusChanged = false;
+                    clearTimeout(timeout);
                     clearInterval(init1);
                 }
             }, this.checkInterval);
+            timeout = setTimeout(() => {
+                clearInterval(init1);
+                resolve();
+            }, this.timeout);
         });
     }
 
@@ -606,6 +613,7 @@ class Scratch3SensingBlocks {
         });
         document.dispatchEvent(event);
         return new Promise((resolve) => {
+            let timeout = null;
             let init1 = setInterval(() => {
                 const IRSensor = mabotSensorStatesManager.IRSensor[mabot_IR_sensor_index];
                 if (IRSensor && IRSensor.statusChanged) {
@@ -615,9 +623,14 @@ class Scratch3SensingBlocks {
                         resolve(0);
                     }
                     IRSensor.statusChanged = false;
+                    clearTimeout(timeout);
                     clearInterval(init1);
                 }
             }, this.checkInterval);
+            timeout = setTimeout(() => {
+                clearInterval(init1);
+                resolve();
+            }, this.timeout);
         });
     }
 
@@ -658,7 +671,7 @@ class Scratch3SensingBlocks {
             timeout = setTimeout(() => {
                 clearInterval(init1);
                 resolve();
-            }, 3000)
+            }, 3000);
         });
     }
 
