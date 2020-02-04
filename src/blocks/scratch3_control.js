@@ -145,6 +145,16 @@ class Scratch3ControlBlocks {
         } else if (option === 'this script') {
             util.stopThisScript();
         }
+        const event = new CustomEvent('mabot', {
+            detail: {
+                type: 'control_stop',
+                params: {
+                    opt: option,
+                    thread: util.thread,
+                }
+            }
+        });
+        document.dispatchEvent(event);
     }
 
     createClone (args, util) {

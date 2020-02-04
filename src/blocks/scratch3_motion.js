@@ -70,7 +70,7 @@ class Scratch3MotionBlocks {
         };
     }
 
-    setMotorBallPower(args) {
+    setMotorBallPower(args, util) {
 
         const mabot_motor_ball_index = Cast.toNumber(args.mabot_motor_ball_index);
         const rotate_direction = Cast.toString(args.rotate_direction);
@@ -123,6 +123,7 @@ class Scratch3MotionBlocks {
                         rotate_direction: item.rotate_direction,
                         power: (item.power * 0.8),
                         rotate_for_seconds: item.rotate_for_seconds,
+                        thread: util.thread,
                     }
                 }
             });
@@ -138,7 +139,7 @@ class Scratch3MotionBlocks {
         //return mabotSensorStatesManager.motorBall[mabot_motor_ball_index];
     }
 
-    setMotorBallPower1(args) {
+    setMotorBallPower1(args, util) {
         const mabot_motor_ball_index = Cast.toNumber(args.mabot_motor_ball_index);
         const rotate_direction = Cast.toString(args.rotate_direction);
         const uiPower = Cast.toNumber(args.power);
@@ -180,7 +181,8 @@ class Scratch3MotionBlocks {
                     params: {
                         mabot_motor_ball_index: item.mabot_motor_ball_index, 
                         rotate_direction: item.rotate_direction,
-                        power: (item.power * 0.8)
+                        power: (item.power * 0.8),
+                        thread: util.thread,
                     }
                 }
             });
@@ -189,7 +191,7 @@ class Scratch3MotionBlocks {
 
     }
 
-    setMabotMotorBallSpeed(args) {
+    setMabotMotorBallSpeed(args, util) {
         const mabot_motor_ball_index = Cast.toNumber(args.mabot_motor_ball_index);
         const rotate_direction = Cast.toString(args.rotate_direction);
         const speed = Cast.toNumber(args.speed);
@@ -231,6 +233,7 @@ class Scratch3MotionBlocks {
                         rotate_direction: item.rotate_direction,
                         speed: item.speed,
                         rotate_for_seconds: item.rotate_for_seconds,
+                        thread: util.thread,
                     }
                 }
             });
@@ -246,7 +249,7 @@ class Scratch3MotionBlocks {
 
     }
 
-    setMabotMotorBallSpeed1(args) {
+    setMabotMotorBallSpeed1(args, util) {
         const mabot_motor_ball_index = Cast.toNumber(args.mabot_motor_ball_index);
         const rotate_direction = Cast.toString(args.rotate_direction);
         const speed = Cast.toNumber(args.speed);
@@ -280,7 +283,8 @@ class Scratch3MotionBlocks {
                     params: {
                         mabot_motor_ball_index: item.mabot_motor_ball_index,
                         rotate_direction: item.rotate_direction,
-                        speed: item.speed
+                        speed: item.speed,
+                        thread: util.thread,
                     }
                 }
             });

@@ -352,7 +352,7 @@ class Scratch3SoundBlocks {
         return args.EFFECT;
     }
 
-    setMabotLights (args) {
+    setMabotLights (args, util) {
         const target_light = args.CENTER.replace(/\s/g, "");
         const light_color = Cast.toNumber(args.COLOR);
         const light_mode = Cast.toNumber(args.MODE);
@@ -375,6 +375,7 @@ class Scratch3SoundBlocks {
                     light_color,
                     time_seconds,
                     block_or_not,
+                    thread: util.thread,
                 }
             }
         });
@@ -427,7 +428,7 @@ class Scratch3SoundBlocks {
         return volume;
     }
 
-    playBuzzer(args){
+    playBuzzer(args, util){
         const buzzer_tone = Cast.toNumber(args.TONE); // 音调
         const buzzer_volume = Cast.toNumber(args.VOLUME); // 音阶
         const time_seconds = args.SECONDS === undefined ? undefined : Cast.toNumber(args.SECONDS);
@@ -442,6 +443,7 @@ class Scratch3SoundBlocks {
                     volume,
                     time_seconds,
                     block_or_not,
+                    thread: util.thread,
                 }
             }
         });
